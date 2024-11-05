@@ -6,6 +6,6 @@ import { connectDB } from './Db.js';
 connectDB();
 console.log('Database connected');
 
-app.listen(4000, () => {
-  console.log('Server on port 4000');
+app.listen(3000, () => {
+  console.log('Server on port 3000');
 });
