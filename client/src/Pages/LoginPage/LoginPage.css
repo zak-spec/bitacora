@@ -1,0 +1,79 @@
+/* Estilos específicos para el login si necesitas sobrescribir algo */
+
+.login-background {
+  background: linear-gradient(135deg, #1a365d 0%, #1a202c 50%, #44337a 100%);
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: transform 0.5s ease;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.login-card:hover {
+  transform: scale(1.02);
+}
+
+.error-message {
+  background: rgba(239, 68, 68, 0.8);
+  color: white;
+  animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.input-field {
+  background: rgba(31, 41, 55, 0.5);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+  background: rgba(31, 41, 55, 0.7);
+}
+
+.login-button {
+  background: linear-gradient(to right, #2563eb, #1d4ed8);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.login-button:hover {
+  background: linear-gradient(to right, #1d4ed8, #1e40af);
+  transform: scale(1.02);
+}
+
+.login-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5),
+              0 0 0 4px rgba(17, 24, 39, 0.5);
+}
+
+.register-link {
+  color: #60a5fa;
+  transition: color 0.3s ease;
+}
+
+.register-link:hover {
+  color: #93c5fd;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+/* Animación de entrada para la tarjeta */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

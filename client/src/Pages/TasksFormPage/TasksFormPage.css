@@ -1,0 +1,152 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: #34495e;
+}
+.max-w-4xl {
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding: 2rem !important;
+}
+
+/* Estilos para el título principal */
+h1 {
+    color: #2c3e50;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem !important;
+}
+
+/* Estilos para las etiquetas */
+label {
+    color: #34495e;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+
+/* Estilos para los inputs y textareas */
+input[type="text"],
+input[type="number"],
+input[type="datetime-local"],
+textarea {
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem !important;
+    transition: all 0.3s ease;
+    background-color: #f8fafc;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="datetime-local"]:focus,
+textarea:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    outline: none;
+}
+
+/* Estilos para los contenedores de especies */
+.border {
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.border:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para los botones */
+button {
+    transition: all 0.3s ease;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+button[type="submit"] {
+    background-color: #2ecc71 !important;
+    padding: 0.75rem 2rem !important;
+    box-shadow: 0 4px 6px rgba(46, 204, 113, 0.2);
+}
+
+button[type="submit"]:hover {
+    background-color: #27ae60 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(46, 204, 113, 0.3);
+}
+
+button[type="button"] {
+    background-color: #3498db !important;
+    padding: 0.75rem 1.5rem !important;
+    box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
+}
+
+button[type="button"]:hover {
+    background-color: #2980b9 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
+}
+
+/* Estilos para input type file */
+input[type="file"] {
+    background-color: #f8fafc;
+    border: 2px dashed #cbd5e0;
+    padding: 1rem !important;
+    cursor: pointer;
+}
+
+input[type="file"]:hover {
+    border-color: #3498db;
+    background-color: #f1f7fe;
+}
+
+/* Diseño responsivo */
+@media (max-width: 768px) {
+    .max-w-4xl {
+        margin: 1rem;
+        padding: 1rem !important;
+    }
+
+    .grid-cols-2 {
+        grid-template-columns: 1fr !important;
+    }
+
+    input, textarea, button {
+        font-size: 16px !important; /* Mejor usabilidad en móviles */
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.space-y-6 > * {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Estilos para mensajes de error o validación */
+.error-message {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.success-message {
+    color: #2ecc71;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
