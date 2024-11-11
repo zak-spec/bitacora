@@ -8,7 +8,7 @@ const tasksSchema=new mongoose.Schema({
     },
     samplingDateTime: {
         type: Date,
-        default: Date.now,
+        required: true
     },
     location: {
         type: {
@@ -30,12 +30,31 @@ const tasksSchema=new mongoose.Schema({
         required: true
     },
     speciesDetails: [{
-        scientificName: String,
-        commonName: String,
-        family: String,
-        sampleQuantity: Number,
-        plantState: String,
-        speciesPhotos: [String]
+        scientificName: {
+            type: String,
+            required: true
+        },
+        commonName: {
+            type: String,
+            required: true
+        },
+        family: {
+            type: String,
+            required: true
+        },
+        sampleQuantity: {
+            type: Number,
+            required: true,
+            min: 1
+        },
+        plantState: {
+            type: String,
+            required: true
+        },
+        speciesPhotos: {
+            type: [String],
+            required: true
+        }
     }],
     additionalObservations: String,
     user: {

@@ -24,8 +24,9 @@ export const adminRequired = (req, res, next) => {
     if (!token) return res.status(401).json({ message: "No estas autorizado" });
     jwt.verify(token, TOKEN_SECRET, (err, user) => {
       if (err) return res.status(401).json({ message: "token no valido" });
-      if (user.rol !== "admin") return res.status(401).json({ message: "No tienes permisos" });
       console.log("soy el usuario", user.rol);
+      if (user.rol != "administrador") return res.status(401).json({ message: "No tienes permisos" });
+   
       
       req.user = user;
       next();   

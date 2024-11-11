@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const TaskSchema = z.object({
   title: z.string().min(1, { message: "El título es obligatorio" }),
-  samplingDateTime: z.date().default(() => new Date()),
+  samplingDateTime: z.string().transform((str) => new Date(str)), // Cambiar a string y transformar
   location: z.object({
     latitude: z.number({ required_error: "La latitud es obligatoria" }),
     longitude: z.number({ required_error: "La longitud es obligatoria" }),

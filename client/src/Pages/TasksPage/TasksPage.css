@@ -1,0 +1,246 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Permanent+Marker&display=swap');
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.task-card {
+  animation: fadeIn 0.5s ease-out;
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 128, 0, 0.1); /* Mantener el sombreado */
+}
+
+.task-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 128, 0, 0.15);
+}
+
+.species-item {
+  transition: all 0.2s ease;
+  background-color: #e6fffa;
+}
+
+.species-item:hover {
+  background-color: #b2f5ea;
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.photo-item {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #e2e8f0;
+}
+
+.photo-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 128, 0, 0.1);
+}
+
+.container {
+  background-color: #f0fdf4;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.bitacora-background {
+  background-color: #fdf5e6; /* Color similar al papel antiguo */
+}
+
+.bitacora-container {
+  background: url('/ruta/a/tu/imagen-textura-papel.png');
+  background-size: cover;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.bitacora-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3rem;
+  color: #5b4a3f;
+  margin-bottom: 2rem;
+}
+
+/* Aumentar el contraste de bitacora-entry */
+.bitacora-entry {
+  background-color: #fff;
+  padding: 2.5rem;
+  border: 2px solid #a67c52;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 3rem;
+}
+
+/* Aplicar tipografía a h3 dentro de bitacora-entry */
+.bitacora-entry h3 {
+  font-family: 'Cormorant Garamond', serif;
+  color: #4b381f;
+}
+
+/* Mejorar legibilidad del texto dentro de bitacora-entry */
+.bitacora-entry p {
+  font-family: 'Cormorant Garamond', serif; /* Asegurar tipografía */
+  font-size: 1.125rem; /* Aumentar tamaño de fuente */
+  line-height: 1.6;
+  color: #333; /* Mejorar contraste del texto */
+}
+
+.bitacora-entry h2 {
+  font-family: 'Cormorant Garamond', serif;
+  color: #4b381f;
+}
+
+/* Opcional: estilizar el texto para que parezca escrito a mano */
+.bitacora-entry p {
+  font-family: 'Permanent Marker', cursive;
+  color: #333;
+}
+
+.info-section {
+  background-color: #f8f9fa;
+  border-left: 4px solid #6b4423;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-radius: 0 8px 8px 0;
+}
+
+.info-section .photo-grid {
+  margin-top: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+}
+
+.info-section .photo-item {
+  border: 1px solid #a67c52;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.info-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  color: #4b381f;
+  min-width: 100px;
+}
+
+.info-value {
+  font-family: 'Cormorant Garamond', serif;
+  color: #333;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  color: #4b381f;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #a67c52;
+}
+
+.species-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.species-card {
+  background-color: #fff;
+  border: 1px solid #a67c52;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.species-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.species-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #4b381f;
+}
+
+.species-info-grid {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.species-info-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+}
+
+.species-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  color: #4b381f;
+  margin-bottom: 0.75rem;
+}
+
+.species-photos {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Estilos para el contenedor del mapa */
+.map-container {
+  border: 2px solid #a67c52;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Estilos para el popup del mapa */
+.leaflet-popup-content {
+  font-family: 'Cormorant Garamond', serif;
+  color: #4b381f;
+}
+
+.leaflet-popup-content h4 {
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.leaflet-popup-content p {
+  margin: 0.25rem 0;
+  color: #4a5568;
+}

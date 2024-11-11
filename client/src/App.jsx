@@ -7,13 +7,14 @@ import { AuthProvider } from "./Context/AuthContext";
 import TasksPage from "./Pages/TasksPage/TasksPage";
 import TasksFormPage from "./Pages/TasksFormPage/TasksFormPage";
 import Profile from "./Pages/ProfilePage/ProfilePage";
-import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "./Pages/ProtectedRoute/ProtectedRoute";
 import Homepage from "./Pages/HomePage/HomePage";
+import { TasksProvider } from "./Context/TasksContex";
 
 const App = () => {
   return (
-    <div>
-      <AuthProvider>
+    <AuthProvider>
+      <TasksProvider>
         <Router>
           <Routes>
             <Route path="/" element={<Homepage/>} />
@@ -28,8 +29,8 @@ const App = () => {
             </Route>
           </Routes>
         </Router>
-      </AuthProvider>
-    </div>
+      </TasksProvider>
+    </AuthProvider>
   );
 };
 

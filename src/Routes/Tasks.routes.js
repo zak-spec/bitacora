@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authRequired } from "../Middlewares/validateToken.js";
+import { authRequired, adminRequired } from "../Middlewares/ValidateToken.js";
 import { getTasks, getTask, createTask, deleteTask, updateTask } from "../Controllers/Tasks.controllers.js";
 import { validateSchema } from "../Middlewares/Validator.middleware.js";
 import { TaskSchema } from "../Schemas/Task.schema.js";
