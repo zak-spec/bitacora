@@ -1,0 +1,27 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout.authenticated {
+  display: grid;
+  grid-template-columns: 1fr auto;
+}
+
+.main-content {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Asegurarse de que el navbar esté en la parte superior cuando no está autenticado */
+.layout:not(.authenticated) .navbar {
+  order: -1; /* Esto fuerza al navbar a estar al principio */
+}
+
+@media (max-width: 768px) {
+  .layout.authenticated {
+    display: block;
+  }
+}

@@ -42,12 +42,10 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const userFound = await User.findOne({ email });
-    if (!userFound)
-      return res.status(400).json(["Usuario o contraseña incorrectos"]);
+    if (!userFound) return res.status(400).json(["Usuario o contraseña incorrectos"]);
 
     const isMatch = await bcrypt.compare(password, userFound.password);
-    if (!isMatch)
-      return res.status(400).json(["Usuario o contraseña incorrectos"]);
+    if (!isMatch) return res.status(400).json(["Usuario o contraseña incorrectos"]);
 
     const token = await createAccessToken(userFound);
     res.cookie("token", token, {

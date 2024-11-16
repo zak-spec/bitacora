@@ -8,7 +8,7 @@ export function createAccessToken(user) {
         jwt.sign(
             { id: user._id, rol: user.rol }, // Incluye el rol en el payload
             TOKEN_SECRET,
-            { expiresIn: "1h" },
+            { expiresIn: "1d" },
             (err, token) => {
                 if (err) return reject(err);
                 resolve(token);

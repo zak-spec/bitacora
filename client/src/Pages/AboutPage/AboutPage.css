@@ -1,0 +1,200 @@
+.about-container {
+  min-height: 100vh;
+  padding: 3rem 1rem;
+  background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)),
+              url('/patterns/herbarium-pattern.png');
+  position: relative;
+  overflow: hidden;
+}
+
+.leaf-pattern {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.1;
+  pointer-events: none;
+  background: 
+    repeating-linear-gradient(45deg, 
+      #1B5E20 0px, #1B5E20 1px,
+      transparent 1px, transparent 20px);
+}
+
+.about-container h1 {
+  color: #2E7D32;
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.about-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.98);
+  padding: 3rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.about-content p {
+  line-height: 1.6;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.mission-statement p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #555;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.features {
+  background: #F1F8E9;
+  padding: 2rem;
+  border-radius: 10px;
+  margin: 2rem 0;
+}
+
+.features h2 {
+  color: #2E7D32;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.features ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  padding-left: 0;
+}
+
+.features li {
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  margin: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+}
+
+.features li:before {
+  content: "🌱";
+  margin-right: 10px;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.benefit-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.benefit-card:hover {
+  transform: translateY(-5px);
+}
+
+.contact {
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 2px solid #E8F5E9;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  font-family: "Courier New", monospace;
+}
+
+.contact-info p {
+  color: #558B2F;
+}
+
+.methodology-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.method-card {
+  background: #F9FBE7;
+  padding: 1.5rem;
+  border-left: 4px solid #558B2F;
+  border-radius: 4px;
+}
+
+.method-card h3 {
+  color: #33691E;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.method-card ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.method-card li {
+  padding: 0.5rem 0;
+  font-size: 0.95rem;
+  color: #4A4A4A;
+  border-bottom: 1px dotted #DDE4C7;
+}
+
+.institutional {
+  background: #E8F5E9;
+  padding: 2rem;
+  border-radius: 4px;
+  margin-top: 3rem;
+}
+
+@media (max-width: 768px) {
+  .contact-info {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .benefits-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  .about-container {
+    background: white;
+  }
+  
+  .leaf-pattern {
+    display: none;
+  }
+  
+  .about-content {
+    box-shadow: none;
+  }
+}
+
+h1 {
+  color: #1B5E20;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 2.5rem;
+  letter-spacing: 0.5px;
+}

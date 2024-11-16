@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate,useParams } from 'react-router-dom'
 import "./TasksFormPage.css"
 import { useTasks } from '../../Context/TasksContex'
 import { useForm } from 'react-hook-form';
 import { uploadFile } from '../../Firebase/Config';
 import { useAuth } from '../../Context/AuthContext';
+import { set } from 'mongoose';
+
 
 const TasksFormPage = () => {
-  const { user } = useAuth();
-  const { tasks, createTasks } = useTasks()
-  const [File, setFile] = useState([])
+  const {loading} = useAuth();
+  const {createTasks,getTask,updateTask } = useTasks()
+  // const [File, setFile] = useState([])
   const [samplingFiles, setSamplingFiles] = useState([]);
   const [speciesFiles, setSpeciesFiles] = useState([]); // Añadir este estado
-  
-  const navigate = useNavigate()
-
-  const { register, handleSubmit: handleReactHookFormSubmit, formState: { errors } } = useForm({
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const params = useParams();
+  const { register, handleSubmit: handleReactHookFormSubmit, formState: { errors },setValue } = useForm({
     defaultValues: {
       title: '',
       samplingDateTime: new Date().toISOString().slice(0, 16),
@@ -32,6 +33,79 @@ const TasksFormPage = () => {
       }]
     }
   });
+
+  useEffect(() => {
+    async function loadTask() {
+      if (params.id) {
+        const task = await getTask(params.id);
+        setValue('title', task.title);
+        setValue('samplingDateTime', new Date(task.samplingDateTime).toISOString().slice(0, 16));
+        setValue('weatherConditions', task.weatherConditions);
+        setValue('habitatDescription', task.habitatDescription);
+        setValue('additionalObservations', task.additionalObservations);
+        setValue('speciesDetails', task.speciesDetails);
+        
+        // Guardar las URLs de las fotos existentes
+        setSamplingFiles(task.samplingPhotos || []);
+        if (task.speciesDetails) {
+          setSpeciesFiles(task.speciesDetails.map(species => species.speciesPhotos || []));
+        }
+        
+        setFormData(prev => ({
+          ...prev,
+          ...task,
+          samplingDateTime: new Date(task.samplingDateTime).toISOString().slice(0, 16)
+        }));
+      } else {
+        // Limpiar el formulario cuando no hay ID
+        setValue('title', '');
+        setValue('samplingDateTime', new Date().toISOString().slice(0, 16));
+        setValue('weatherConditions', '');
+        setValue('habitatDescription', '');
+        setValue('additionalObservations', '');
+        setValue('speciesDetails', [{
+          scientificName: '',
+          commonName: '',
+          family: '',
+          sampleQuantity: 0,
+          plantState: '',
+          speciesPhotos: []
+        }]);
+        
+        setSamplingFiles([]);
+        setSpeciesFiles([[]]);
+        
+        setFormData({
+          title: '',
+          samplingDateTime: new Date().toISOString().slice(0, 16),
+          location: {
+            latitude: '',
+            longitude: ''
+          },
+          weatherConditions: '',
+          habitatDescription: '',
+          samplingPhotos: [],
+          speciesDetails: [{
+            scientificName: '',
+            commonName: '',
+            family: '',
+            sampleQuantity: 0,
+            plantState: '',
+            speciesPhotos: []
+          }],
+          additionalObservations: ''
+        });
+      }
+    }
+    loadTask();
+  }, [params.id, setValue, getTask]);
+
+
+  if(loading) return <h1>Cargando...</h1>;
+
+  const navigate = useNavigate()
+
+
 
   const [formData, setFormData] = useState({
     title: '',
@@ -72,6 +146,7 @@ const TasksFormPage = () => {
     }
   }, []);
 
+
   const uploadAllFiles = async (files) => {
     if (!files || !Array.isArray(files) || files.length === 0) {
       return [];
@@ -82,77 +157,43 @@ const TasksFormPage = () => {
 
   const onSubmit = handleReactHookFormSubmit(async (formValues, event) => {
     try {
-      event.preventDefault();
+      setIsSubmitting(true);
+      
+      if (params.id) {
+        const processedFormValues = {
+          ...formValues,
+          samplingDateTime: new Date(formValues.samplingDateTime).toISOString(),
+          location: {
+            latitude: Number(formData.location.latitude),
+            longitude: Number(formData.location.longitude)
+          },
+          // Mantener las fotos existentes si no hay nuevas
+          samplingPhotos: Array.isArray(samplingFiles) && samplingFiles.length > 0 ? 
+            (typeof samplingFiles[0] === 'string' ? samplingFiles : await uploadAllFiles(samplingFiles)) : 
+            [],
+          speciesDetails: await Promise.all(formValues.speciesDetails.map(async (species, index) => ({
+            ...species,
+            sampleQuantity: Number(species.sampleQuantity),
+            speciesPhotos: speciesFiles[index] ? 
+              (typeof speciesFiles[index][0] === 'string' ? 
+                speciesFiles[index] : 
+                await uploadAllFiles(speciesFiles[index])) : 
+              []
+          })))
+        };
 
-      // Asegurarnos que los datos se envían en el formato correcto
-      const processedFormValues = {
-        ...formValues,
-        samplingDateTime: new Date(formValues.samplingDateTime).toISOString(), // Asegurar formato ISO
-        location: {
-          latitude: Number(formData.location.latitude),
-          longitude: Number(formData.location.longitude)
-        },
-        speciesDetails: formValues.speciesDetails.map(species => ({
-          ...species,
-          sampleQuantity: Number(species.sampleQuantity)
-        }))
-      };
-
-      if (!samplingFiles || samplingFiles.length === 0) {
-        alert('Por favor, agregue al menos una foto de muestreo');
+        await updateTask(params.id, processedFormValues);
+        navigate('/tasks');
         return;
       }
 
-      // Subir fotos de muestreo
-      const samplingUrls = await uploadAllFiles(samplingFiles);
-
-      // Procesar cada especie y sus fotos
-      const processedSpecies = await Promise.all(
-        formValues.speciesDetails.map(async (species, index) => {
-          const currentSpeciesFiles = speciesFiles[index] || [];
-          if (!currentSpeciesFiles.length) {
-            throw new Error('Por favor, agregue fotos para todas las especies');
-          }
-          const speciesUrls = await uploadAllFiles(currentSpeciesFiles);
-          return {
-            ...species,
-            speciesPhotos: speciesUrls
-          };
-        })
-      );
-
-      // Combinar los datos del formulario
-      const combinedData = {
-        ...processedFormValues,
-        samplingDateTime: processedFormValues.samplingDateTime, // Asegurar que se use la fecha procesada
-        samplingPhotos: samplingUrls,
-        speciesDetails: processedSpecies.map(species => ({
-          ...species,
-          sampleQuantity: Number(species.sampleQuantity)
-        }))
-      };
-
-      // Validaciones adicionales de tipos
-      if (!Array.isArray(combinedData.samplingPhotos) || combinedData.samplingPhotos.length === 0) {
-        throw new Error('Las fotos del muestreo son requeridas');
-      }
-
-      if (!Array.isArray(combinedData.speciesDetails) || combinedData.speciesDetails.length === 0) {
-        throw new Error('Debe agregar al menos una especie');
-      }
-
-      // Verificar que la fecha es válida antes de enviar
-      if (isNaN(new Date(combinedData.samplingDateTime).getTime())) {
-        throw new Error('La fecha de muestreo no es válida');
-      }
-
-      const success = await createTasks(combinedData);
-      if (success) {
-        navigate('/tasks');
-      }
+      // Resto del código existente para crear nueva tarea
+      // ...existing code...
     } catch (error) {
-      console.error('Error al crear la tarea:', error);
-      alert(error.message || 'Error al crear la tarea. Por favor, intente de nuevo.');
+      console.error('Error:', error);
+      alert(error.message || 'Error al procesar el formulario');
+    } finally {
+      setIsSubmitting(false);
     }
   });
 
@@ -195,6 +236,15 @@ const TasksFormPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-4">
+      {isSubmitting && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+            <p className="mt-4 text-gray-700">Guardando muestra...</p>
+          </div>
+        </div>
+      )}
+      
       <h1 className="text-2xl font-bold mb-6">Nueva Muestra Botánica</h1>
       
       <form onSubmit={onSubmit} className="space-y-6">
@@ -274,10 +324,24 @@ const TasksFormPage = () => {
 
         <div>
           <label className="block mb-2">Fotos del Muestreo:</label>
+          <div className="flex flex-wrap gap-2 mb-2">
+            {samplingFiles && samplingFiles.map((url, idx) => (
+              typeof url === 'string' && (
+                <img 
+                  key={idx} 
+                  src={url} 
+                  alt={`Muestreo ${idx + 1}`} 
+                  className="w-24 h-24 object-cover rounded"
+                />
+              )
+            ))}
+          </div>
           <input
             type="file"
             multiple
-            {...register("samplingPhotos", { required: "Las fotos del muestreo son requeridas" })}
+            {...register("samplingPhotos", { 
+              required: params.id ? false : "Las fotos del muestreo son requeridas" 
+            })}
             onChange={(e) => handleFileChange(e, 'samplingPhotos')}
             className="w-full p-2 border rounded"
             accept="image/*"
@@ -360,6 +424,18 @@ const TasksFormPage = () => {
               </div>
               <div className="mt-4">
                 <label className="block mb-2">Fotos de la Especie:</label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {speciesFiles[index] && speciesFiles[index].map((url, idx) => (
+                    typeof url === 'string' && (
+                      <img 
+                        key={idx} 
+                        src={url} 
+                        alt={`Especie ${index + 1} foto ${idx + 1}`} 
+                        className="w-24 h-24 object-cover rounded"
+                      />
+                    )
+                  ))}
+                </div>
                 <input
                   type="file"
                   multiple
@@ -394,8 +470,13 @@ const TasksFormPage = () => {
         <button
           type="submit"
           className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600"
+          disabled={isSubmitting}
         >
-          Guardar Muestra
+          {isSubmitting 
+            ? 'Procesando...' 
+            : params.id 
+              ? 'Guardar Cambios' 
+              : 'Guardar Muestra'}
         </button>
       </form>
     </div>

@@ -150,3 +150,22 @@ input[type="file"]:hover {
     font-size: 0.85rem;
     margin-top: 0.25rem;
 }
+
+/* Estilos para la ventana de carga */
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Asegurar que el z-index sea mayor que otros elementos */
+.fixed.inset-0 {
+    z-index: 9999;
+}

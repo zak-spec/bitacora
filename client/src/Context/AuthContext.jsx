@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import { loginRequest, registerRequest, verifyTokenRequest } from "../Api/Auth";
+import { loginRequest, registerRequest, verifyTokenRequest,logoutRequest } from "../Api/Auth";
 import Cookies from "js-cookie";
 
 const AuthContext = createContext();
@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, [errors]);
 
+
   const signup = async (user) => {
     try {
       const res = await registerRequest(user);
@@ -34,8 +35,8 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true);
       }
     } catch (error) {
-      console.log(error.response.data);
-      setErrors(error.response.data.message);
+      console.log(error);
+      setErrors(error.response.data);
     }
   };
 
@@ -53,16 +54,26 @@ export const AuthProvider = ({ children }) => {
       return res.data;
     } catch (error) {
       console.error("Signin error:", error);
-      setErrors(error.response?.data?.message || ["Error al iniciar sesión"]);
+      setErrors(error.response.data);
       setIsAuthenticated(false);
       throw error;
     }
   };
 
-  const logout = () => {
-    Cookies.remove("token");
-    setUser(null);
-    setIsAuthenticated(false);
+  const logout = async () => {
+    try {
+      const res=logoutRequest();
+      console.log("res:", res);
+      
+      if (res.status === 200) {
+        setUser(null);
+        setIsAuthenticated(false);
+      }
+    } catch (error) {
+      console.log(error.response.data);
+    }
+
+   
   };
 
   useEffect(() => {

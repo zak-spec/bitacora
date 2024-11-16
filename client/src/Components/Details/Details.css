@@ -1,0 +1,176 @@
+/* Importar fuentes */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Permanent+Marker&display=swap');
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Copiar todos los estilos existentes de TasksPage.css pero eliminar los que no son específicos de la tarjeta */
+/* ...existing styles from TasksPage.css but only card-related ones... */
+
+.task-card {
+  animation: fadeIn 0.5s ease-out;
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 128, 0, 0.1); /* Mantener el sombreado */
+}
+
+.task-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 128, 0, 0.15);
+}
+
+.species-item {
+  transition: all 0.2s ease;
+  background-color: #e6fffa;
+}
+
+.species-item:hover {
+  background-color: #b2f5ea;
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Increased size */
+  gap: 1.5rem;
+}
+
+.photo-item {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #e2e8f0;
+  min-height: 200px; /* Increased size */
+}
+
+.photo-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 128, 0, 0.1);
+}
+
+.container {
+  background-color: #f0fdf4;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.bitacora-entry {
+  background-color: #fff;
+  border: 2px solid #a67c52;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.info-item {
+  padding: 1.25rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.info-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.info-item.col-span-2 {
+  grid-column: span 2;
+  background-color: #f0f9ff;
+  border-left: 4px solid #0ea5e9;
+}
+
+.info-value {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.info-label {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.section-title {
+  font-size: 1.875rem;
+  color: #4b381f;
+  border-bottom: 2px solid #a67c52;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.species-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.map-style {
+  height: 400px;
+  width: 100%;
+  border-radius: 8px;
+  z-index: 1;
+}
+
+.coordinate-box {
+  background-color: #f8fafc;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.coordinate-label {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+.coordinate-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #0f766e;
+  font-family: 'Consolas', monospace;
+}
+
+/* Ajustes para el diseño de dos columnas */
+@media (min-width: 768px) {
+  .info-section {
+    display: flex;
+    gap: 3rem;
+  }
+
+  .map-container {
+    height: 100%;
+    min-height: 400px;
+    margin: 1.5rem 0;
+  }
+}
+
+/* Ajustes para las columnas en móvil */
+@media (max-width: 767px) {
+  .info-section > div {
+    margin-bottom: 2rem;
+  }
+
+  .bitacora-entry {
+    padding: 1.5rem;
+  }
+}

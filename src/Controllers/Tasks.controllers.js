@@ -1,22 +1,30 @@
 import Task from "../Models/Task.model.js";
+
 export const getTasks = async (req, res) => {
-  const tasks = await Task.find({
-    user: req.user.id
-  }).populate("user");
-  res.send(tasks);
+  try {
+    const tasks = await Task.find({
+      user: req.user.id,
+    }).populate("user");
+    res.send(tasks);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error al obtener las tareas", error: error.message });
+  }
 };
 
 export const createTask = async (req, res) => {
   try {
-    const { 
-      title, 
+    const {
+      title,
       samplingDateTime,
-      location, 
-      weatherConditions, 
-      habitatDescription, 
-      samplingPhotos, 
-      speciesDetails, 
-      additionalObservations 
+      location,
+      weatherConditions,
+      habitatDescription,
+      samplingPhotos,
+      speciesDetails,
+      additionalObservations,
     } = req.body;
 
     // Asegurar que la fecha es válida
@@ -30,42 +38,67 @@ export const createTask = async (req, res) => {
       samplingDateTime: dateObj,
       location: {
         latitude: Number(location.latitude),
-        longitude: Number(location.longitude)
+        longitude: Number(location.longitude),
       },
       weatherConditions,
       habitatDescription,
       samplingPhotos,
-      speciesDetails: speciesDetails.map(species => ({
+      speciesDetails: speciesDetails.map((species) => ({
         ...species,
-        sampleQuantity: Number(species.sampleQuantity)
+        sampleQuantity: Number(species.sampleQuantity),
       })),
       user: req.user.id,
-      additionalObservations
+      additionalObservations,
     });
 
     await newTask.save();
     res.json(newTask);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error al crear la tarea", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error al crear la tarea", error: error.message });
   }
 };
 
 export const getTask = async (req, res) => {
-const task=await Task.findById(req.params.id);
-if (!task) return res.status(404).json({ message: "Task no encontrado" });
-res.json(task);
+  try{
+    const task = await Task.findById(req.params.id);
+  if (!task) return res.status(404).json({ message: "Task no encontrado" });
+  res.json(task);
+  
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error al obtener la tarea", error: error.message });
+  }
 };
 
-
 export const deleteTask = async (req, res) => {
- const task = await Task.findByIdAndDelete(req.params.id);
-  if (!task) return res.status(404).json({ message: "Task no encontrado" });
-  return res.json({ message: "Task eliminado" });
+  try {
+    const task = await Task.findByIdAndDelete(req.params.id);
+    if (!task) return res.status(404).json({ message: "Task no encontrado" });
+    return res.json({ message: "Task eliminado" });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error al eliminar la tarea", error: error.message });
+  }
 };
 
 export const updateTask = async (req, res) => {
-const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
-if (!task) return res.status(404).json({ message: "Task no encontrado" });
-res.json(task);
+  try {
+    const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!task) return res.status(404).json({ message: "Task no encontrado" });
+    res.json(task);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error al actualizar la tarea", error: error.message });
+  }
 };

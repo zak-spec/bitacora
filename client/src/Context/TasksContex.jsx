@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import { createTaskRequest, getTasksRequest } from '../Api/Tasks';
+import { createTaskRequest, getTasksRequest, getTaskRequest,deleteTaskRequest,updateTaskRequest} from '../Api/Tasks';
 
 // Crear el contexto con un valor inicial por defecto
 export const TasksContext = createContext({
@@ -29,6 +29,15 @@ export function TasksProvider({ children }) {
       console.error(error);
     }
   };
+  const getTask = async (id) => {
+    try {
+      const res = await getTaskRequest(id);
+      return res.data; // Retornamos directamente los datos en lugar de guardarlos en el estado
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
 
   const createTasks = async (task) => {
     try {
@@ -41,8 +50,37 @@ export function TasksProvider({ children }) {
     }
   };
 
+const deleteTask = async (id) => {
+  try{
+    const res=await deleteTaskRequest(id);
+    console.log(res);
+    
+    if(res.status===200){
+      console.log('Task deleted');
+      
+      setTasks(tasks.filter((task)=>task._id!==id));
+    }
+
+  } catch(error){
+    console.error(error);
+  }
+};
+const updateTask = async (id,task) => {
+  try{
+    const res=await updateTaskRequest(id,task);
+    console.log(res);
+    
+    if(res.status===200){
+      console.log('Task updated');
+      setTasks(tasks.map((task)=>task._id===id?res.data:task));
+    }
+
+  } catch(error){
+    console.error(error);
+  }
+};  
   return (
-    <TasksContext.Provider value={{ tasks, createTasks, getTasks }}>
+    <TasksContext.Provider value={{ tasks, createTasks, getTasks,getTask,deleteTask,updateTask }}>
       {children}
     </TasksContext.Provider>
   );

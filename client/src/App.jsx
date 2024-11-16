@@ -8,29 +8,39 @@ import TasksPage from "./Pages/TasksPage/TasksPage";
 import TasksFormPage from "./Pages/TasksFormPage/TasksFormPage";
 import Profile from "./Pages/ProfilePage/ProfilePage";
 import ProtectedRoute from "./Pages/ProtectedRoute/ProtectedRoute";
-import Homepage from "./Pages/HomePage/HomePage";
+import HomePage from "./Pages/HomePage/HomePage";
 import { TasksProvider } from "./Context/TasksContex";
+import DetailsPage from "./Pages/DetailsPage/DetailsPage";
+import AboutPage from "./Pages/AboutPage/AboutPage";
+import Header from "./Components/Header/Header";
+import Layout from './Components/Layout/Layout';
 
 const App = () => {
   return (
-    <AuthProvider>
-      <TasksProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Homepage/>} />
-            <Route path="/login" element={<LoginPage/>} />
-            <Route path="/register" element={<RegisterPage/>} />
-            
-            <Route element={<ProtectedRoute/>}> 
-            <Route path="/tasks" element={<TasksPage/>} />
-            <Route path="/add-task" element={<TasksFormPage/>} />
-            <Route path="/tasks/:id" element={<TasksFormPage/>} />
-            <Route path="/profile" element={<Profile/>} /> 
-            </Route>
-          </Routes>
-        </Router>
-      </TasksProvider>
-    </AuthProvider>
+    <div className="App">
+      <AuthProvider>
+        <TasksProvider>
+          <Router>
+            <Layout>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/About" element={<AboutPage />} />
+
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/tasks" element={<TasksPage />} />
+                  <Route path="/add-task" element={<TasksFormPage />} />
+                  <Route path="/tasks/:id" element={<TasksFormPage />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/details/:id" element={<DetailsPage />} />
+                </Route>
+              </Routes>
+            </Layout>
+          </Router>
+        </TasksProvider>
+      </AuthProvider>
+    </div>
   );
 };
 
