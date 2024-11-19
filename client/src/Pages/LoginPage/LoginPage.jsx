@@ -7,19 +7,26 @@ import './LoginPage.css';
 
 const LoginPage = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const { signin, isAuthenticated, errors: signinErrors } = useAuth();
+  const { signin, isAuthenticated, errors: signinErrors, rol } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/tasks');
+    if (isAuthenticated && rol) {
+      const redirectPath = 
+        rol === "administrador" ? "/users" :
+        rol === "colaborador" ? "/collaborator" : "/tasks";
+      navigate(redirectPath);
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, rol, navigate]);
 
   const onSubmit = handleSubmit(async (data) => {
-    const success = await signin(data);
-    if (success) {
-      navigate('/tasks');
+    try {
+      const result = await signin(data);
+      if (result.success) {
+        navigate(result.redirectPath);
+      }
+    } catch (error) {
+      console.error("Error en login:", error);
     }
   });
 

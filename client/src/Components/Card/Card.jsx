@@ -2,11 +2,16 @@ import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import './Card.css';
 import { useTasks } from '../../Context/TasksContex';
-import {Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-function Card({ task, index }) {
+function Card({ task, index, isCollaborator }) {
   const { deleteTask } = useTasks();
- 
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/details/${task._id}`);
+  };
+
   const handleDelete = async(e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -21,7 +26,7 @@ function Card({ task, index }) {
   const handleEdit = (e) => {
     e.stopPropagation();
     e.preventDefault();
-    console.log('Editando:', task._id);
+    navigate(`/tasks/${task._id}`);
   };
 
   const handleUpdate = (e) => {
@@ -31,32 +36,31 @@ function Card({ task, index }) {
   };
 
   return (
-    <div className="bitacora-entry mb-12 p-8" style={{ animationDelay: `${index * 0.1}s` }}>
+    <div 
+      className="bitacora-entry mb-12 p-8" 
+      style={{ animationDelay: `${index * 0.1}s` }}
+      onClick={handleCardClick}
+    >
       <div className="flex justify-between items-center mb-8 border-b-2 border-emerald-200 pb-3">
         <h2 className="text-3xl font-bold text-emerald-900">
           {task.title}
         </h2>
         <div className="flex gap-2">
-          <Link
-            to={`/tasks/${task._id}`}
+          {!isCollaborator && (
+            <button
+              onClick={handleDelete}
+              className="action-button bg-red-500 hover:bg-red-600"
+            >
+              <i className="fas fa-trash-alt mr-2"></i>
+              Eliminar
+            </button>
+          )}
+          <button
+            onClick={handleEdit}
             className="action-button bg-blue-500 hover:bg-blue-600"
           >
             <i className="fas fa-edit mr-2"></i>
             Editar
-          </Link>
-          {/* <button
-            onClick={handleUpdate}
-            className="action-button bg-green-500 hover:bg-green-600"
-          >
-            <i className="fas fa-sync-alt mr-2"></i>
-            Actualizar
-          </button> */}
-          <button
-            onClick={handleDelete}
-            className="action-button bg-red-500 hover:bg-red-600"
-          >
-            <i className="fas fa-trash-alt mr-2"></i>
-            Eliminar
           </button>
         </div>
       </div>
@@ -144,12 +148,13 @@ function Card({ task, index }) {
                   task.samplingPhotos.map((photo, idx) => (
                     <div key={idx} className="photo-item">
                       <img
-                        src={`${photo}`}
+                        src={photo || "https://via.placeholder.com/150?text=No+Image"}
                         alt={`Muestra ${idx + 1}`}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          console.error(`Error loading image ${idx}:`, photo);
+                          console.warn(`Error loading image ${idx}:`, photo);
                           e.target.src = "https://via.placeholder.com/150?text=Error";
+                          e.target.onerror = null; // Prevenir bucle infinito
                         }}
                       />
                     </div>

@@ -174,3 +174,25 @@
     padding: 1.5rem;
   }
 }
+
+/* Estilos para los botones de exportación */
+.export-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.export-button {
+  transition: all 0.2s ease;
+}
+
+.export-button:hover {
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .export-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

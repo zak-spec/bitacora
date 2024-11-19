@@ -1,32 +1,35 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../Context/AuthContext";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaUser, FaEnvelope, FaLock, FaUserTag, FaExclamationCircle } from 'react-icons/fa';
-import './RegisterPage.css';
+// import './RegisterPage.css';
 
-const RegisterPage = () => {
+const CreateUserPage = () => {
   const { register, handleSubmit, formState: { errors: formErrors } } = useForm();
-  const { signup, isAuthenticated, errors: authErrors, user } = useAuth();
+  const { signup, isAuthenticated, user, errors: authErrors } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation(); // Añadir esto
-  const isAdminCreating = location.state?.isAdminCreating; // Nuevo
 
+  // Proteger la ruta
   useEffect(() => {
-    if (isAuthenticated && user) {
-      if (isAdminCreating) {
-        navigate('/users');
-      } else if (user.rol === "administrador") {
-        navigate('/users');
-      } else {
-        navigate(user.rol === "colaborador" ? "/collaborator" : "/tasks");
-      }
+    console.log('Verificando autorización:', { isAuthenticated, userRole: user?.rol });
+    if (!isAuthenticated || user?.rol !== 'administrador') {
+      console.log('Usuario no autorizado, redirigiendo...');
+      navigate('/users');
     }
   }, [isAuthenticated, user]);
 
   const onSubmit = handleSubmit(async (values) => {
+    console.log('Intentando crear usuario con datos:', values);
     try {
-      await signup(values);
+      const result = await signup(values);
+      console.log('Resultado del registro:', result);
+      if (result.success) {
+        // Dar tiempo para que se actualice la lista de usuarios
+        setTimeout(() => {
+          navigate('/users');
+        }, 1000);
+      }
     } catch (error) {
       console.error("Error en registro:", error);
     }
@@ -43,10 +46,10 @@ const RegisterPage = () => {
         ))}
         
         <h1 className="text-3xl font-bold text-white mb-8 text-center">
-          Crear Nueva Cuenta
+          Crear Nuevo Usuario
         </h1>
 
-        <form onSubmit={onSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-200 mb-2">
               Usuario
@@ -152,19 +155,12 @@ const RegisterPage = () => {
             type="submit"
             className="w-full py-3 rounded-lg font-semibold login-button"
           >
-            Crear Cuenta
+            Crear Usuario
           </button>
         </form>
-
-        <p className="text-center text-gray-300 mt-6">
-          ¿Ya tienes una cuenta? {" "}
-          <Link to="/login" className="register-link">
-            Inicia sesión
-          </Link>
-        </p>
       </div>
     </div>
   );
-};
+}
 
-export default RegisterPage;
+export default CreateUserPage;

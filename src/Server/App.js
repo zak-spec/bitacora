@@ -5,6 +5,8 @@ import morgan from 'morgan';
 import authRoutes from '../Routes/Auth.routes.js';
 import cookieParser from 'cookie-parser';
 import tasksRoutes from '../Routes/Tasks.routes.js';
+import Formato from '../Routes/Formato.routes.js';
+import Collaborator from '../Routes/Collaborator.routes.js';
 import cors from 'cors';
 
 const app = express();
@@ -21,6 +23,9 @@ app.use(cors({
 }));
 app.use('/api', authRoutes);
 app.use('/api', tasksRoutes);
+app.use('/api', Formato);
+app.use('/api', Collaborator);
+
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

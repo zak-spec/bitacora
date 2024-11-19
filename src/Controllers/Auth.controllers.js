@@ -10,6 +10,7 @@ export const register = async (req, res) => {
   try {
     const userFound = await User.findOne({ email });
     if (userFound) return res.status(400).json(["El email ya está registrado"]);
+    
     const passwordHash = await bcrypt.hash(password, 10);
     const newUser = new User({
       email,
@@ -18,12 +19,34 @@ export const register = async (req, res) => {
       rol,
     });
 
+    // Verificar si es una creación por administrador y preservar el token original
+    const isAdminRequest = req.user && req.user.rol === 'administrador';
+    const originalToken = req.cookies.token;
+    
     const userSave = await newUser.save();
+    
+    // Si es una creación por administrador, mantener el token existente
+    if (req.user && req.user.rol === 'administrador') {
+      return res.json({
+        id: userSave._id,
+        username: userSave.username,
+        email: userSave.email,
+        rol: userSave.rol,
+        createdAt: userSave.createdAt,
+        updatedAt: userSave.updatedAt,
+        isAdminCreated: true
+      });
+    }
+
+    // Para registro normal, crear nuevo token
     const token = await createAccessToken(userSave);
     res.cookie("token", token, {
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 24 horas
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000,
     });
+
     res.json({
       id: userSave._id,
       username: userSave.username,
@@ -31,6 +54,7 @@ export const register = async (req, res) => {
       rol: userSave.rol,
       createdAt: userSave.createdAt,
       updatedAt: userSave.updatedAt,
+      isAdminCreated: isAdminRequest
     });
   } catch (error) {
     console.log(error);
@@ -124,3 +148,5 @@ export const verifyToken = async (req, res) => {
     return res.status(401).json({ message: "Token inválido" });
   }
 };
+
+

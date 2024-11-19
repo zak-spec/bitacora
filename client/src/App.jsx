@@ -14,6 +14,10 @@ import DetailsPage from "./Pages/DetailsPage/DetailsPage";
 import AboutPage from "./Pages/AboutPage/AboutPage";
 import Header from "./Components/Header/Header";
 import Layout from './Components/Layout/Layout';
+import SearchPage from "./Pages/SearchPage/SearchPage";
+import Collaborator from "./Pages/Collaborator/Collaborator";
+import UsersPage from "./Pages/UsersPage/UsersPage";
+import CreateUserPage from "./Pages/CreateUserPage/CreateUserPage";
 
 const App = () => {
   return (
@@ -26,6 +30,7 @@ const App = () => {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/create-user" element={<CreateUserPage />} />
                 <Route path="/About" element={<AboutPage />} />
 
                 <Route element={<ProtectedRoute />}>
@@ -34,6 +39,9 @@ const App = () => {
                   <Route path="/tasks/:id" element={<TasksFormPage />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/details/:id" element={<DetailsPage />} />
+                  <Route path="/collaborator" element={<Collaborator />} />
+                  <Route path="/search" element={<SearchPage />} />
+                  <Route path="users" element={<UsersPage/>} />
                 </Route>
               </Routes>
             </Layout>

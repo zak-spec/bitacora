@@ -1,11 +1,17 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { createTaskRequest, getTasksRequest, getTaskRequest,deleteTaskRequest,updateTaskRequest} from '../Api/Tasks';
+import {exportFormatoCSV,exportFormatoPDF} from '../Api/Formato';
+import { getTasksByEmail } from '../Api/Collaborator';
+import { useAuth } from './AuthContext';
+
 
 // Crear el contexto con un valor inicial por defecto
 export const TasksContext = createContext({
   tasks: [],
   createTasks: () => {},
-  getTasks: () => {}
+  getTasks: () => {},
+  exportToPDF: () => {},
+  exportToCSV: () => {}
 });
 
 // Mover el hook personalizado a una función componente
@@ -19,7 +25,9 @@ export function useTasks() {
 
 export function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([]);
-
+  const [collaborationTasks, setCollaborationTasks] = useState([]); // Nuevo estado
+  const [email, setEmail] = useState(''); // Nuevo estado
+   const {rol}=useAuth(); 
   const getTasks = async () => {
     try {
       const res = await getTasksRequest();
@@ -79,8 +87,73 @@ const updateTask = async (id,task) => {
     console.error(error);
   }
 };  
+
+  const exportToPDF = async (task) => {
+    try {
+      await exportFormatoPDF(task._id);
+      // Opcional: Mostrar notificación de éxito
+      alert('PDF exportado exitosamente');
+    } catch (error) {
+      console.error('Error al exportar PDF:', error);
+      alert('Error al exportar PDF');
+    }
+  };
+
+  const exportToCSV = async (task) => {
+    try {
+      await exportFormatoCSV(task._id);
+      // Opcional: Mostrar notificación de éxito
+      alert('CSV exportado exitosamente');
+    } catch (error) {
+      console.error('Error al exportar CSV:', error);
+      alert('Error al exportar CSV');
+    }
+  };
+
+  const getCollaborationTasks = async (email) => {
+    try {
+      const res = await getTasksByEmail(email);
+      const tasksData = res.data;
+      
+      if (Array.isArray(tasksData) && tasksData.length > 0) {
+        setCollaborationTasks(tasksData);
+        setTasks(prevTasks => {
+          const combinedTasks = [...prevTasks];
+          tasksData.forEach(newTask => {
+            if (!combinedTasks.find(task => task._id === newTask._id)) {
+              combinedTasks.push(newTask);
+            }
+          });
+          return combinedTasks;
+        });
+        return tasksData;
+      }
+      return [];
+    } catch (error) {
+      console.error('Error fetching collaboration tasks:', error);
+      throw error;
+    }
+  };
+
+  // Solo mantenemos un useEffect para cargar las tareas iniciales
+  useEffect(() => {
+    getTasks();
+
+  }, []);
+
   return (
-    <TasksContext.Provider value={{ tasks, createTasks, getTasks,getTask,deleteTask,updateTask }}>
+    <TasksContext.Provider value={{ 
+      tasks, 
+      collaborationTasks, // Nuevo valor
+      createTasks, 
+      getTasks, 
+      getTask, 
+      deleteTask, 
+      updateTask,
+      exportToPDF,
+      exportToCSV,
+      getCollaborationTasks, // Nueva función
+    }}>
       {children}
     </TasksContext.Provider>
   );

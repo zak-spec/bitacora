@@ -1,18 +1,38 @@
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useTasks } from '../../Context/TasksContex';
 import './Details.css';
 
 const Details = ({ task }) => {
-    // Agregar validación al inicio del componente
+    const { exportToPDF, exportToCSV } = useTasks();
+    
     if (!task || !task.location) {
         return <div className="p-4">Cargando datos...</div>;
     }
 
     return (
         <div className="bitacora-entry mb-12 p-8 animate-fadeIn">
-            <h2 className="text-4xl font-bold mb-8 text-emerald-900 border-b-2 border-emerald-200 pb-3">
-                {task.title}
-            </h2>
+            <div className="flex justify-between items-center mb-8">
+                <h2 className="text-4xl font-bold text-emerald-900 border-b-2 border-emerald-200 pb-3">
+                    {task.title}
+                </h2>
+                <div className="flex gap-4">
+                    <button
+                        onClick={() => exportToPDF(task)}
+                        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
+                    >
+                        <i className="fas fa-file-pdf"></i>
+                        Exportar PDF
+                    </button>
+                    <button
+                        onClick={() => exportToCSV(task)}
+                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+                    >
+                        <i className="fas fa-file-csv"></i>
+                        Exportar CSV
+                    </button>
+                </div>
+            </div>
 
             <div className="flex flex-col gap-8">
                 {/* Información básica y mapa - ahora ocupa todo el ancho */}
@@ -105,12 +125,13 @@ const Details = ({ task }) => {
                                     task.samplingPhotos.map((photo, idx) => (
                                         <div key={idx} className="photo-item">
                                             <img
-                                                src={`${photo}`}
+                                                src={photo || "https://via.placeholder.com/150?text=No+Image"}
                                                 alt={`Muestra ${idx + 1}`}
                                                 className="w-full h-full object-cover"
                                                 onError={(e) => {
-                                                    console.error(`Error loading image ${idx}:`, photo);
+                                                    console.warn(`Error loading image:`, photo);
                                                     e.target.src = "https://via.placeholder.com/150?text=Error";
+                                                    e.target.onerror = null; // Prevenir bucle infinito
                                                 }}
                                             />
                                         </div>
@@ -162,16 +183,13 @@ const Details = ({ task }) => {
                                             species.speciesPhotos.map((photo, photoIdx) => (
                                                 <div key={photoIdx} className="photo-item">
                                                     <img
-                                                        src={`${photo}`}
+                                                        src={photo || "https://via.placeholder.com/150?text=No+Image"}
                                                         alt={`${species.commonName} ${photoIdx + 1}`}
                                                         className="w-full h-full object-cover"
                                                         onError={(e) => {
-                                                            console.error(
-                                                                `Error loading species image ${photoIdx}:`,
-                                                                photo
-                                                            );
-                                                            e.target.src =
-                                                                "https://via.placeholder.com/150?text=Error";
+                                                            console.warn(`Error loading species image:`, photo);
+                                                            e.target.src = "https://via.placeholder.com/150?text=Error";
+                                                            e.target.onerror = null;
                                                         }}
                                                     />
                                                 </div>

@@ -17,7 +17,7 @@ useEffect(() => {
   // Simular una llamada de autenticación
  const timer= setTimeout(() => {
     setIsLoading(false);
-  }, 1000); // Ajusta el tiempo según sea necesario
+  }, 500); // Ajusta el tiempo según sea necesario
   return () => clearTimeout(timer);
 
 }, []);

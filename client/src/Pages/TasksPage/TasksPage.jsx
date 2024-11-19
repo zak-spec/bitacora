@@ -1,36 +1,43 @@
 import React, { useEffect } from "react";
 import { useTasks } from "../../Context/TasksContex";
+import { useAuth } from "../../Context/AuthContext";
 import Card from "../../Components/Card/Card";
 import "./TasksPage.css";
 import { Link } from "react-router-dom";
 
 function TasksPage() {
-  const { tasks, getTasks } = useTasks();
+  const { tasks, collaborationTasks, getTasks, getCollaborationTasks } = useTasks();
+  const { user } = useAuth();
 
   useEffect(() => {
     const loadTasks = async () => {
       try {
-        await getTasks();
+        if (user.rol === 'colaborador') {
+          await getCollaborationTasks(user.email);
+        } else {
+          await getTasks();
+        }
       } catch (error) {
         console.error(error);
       }
     };
 
     loadTasks();
-  }, []); // Añadimos getTasks como dependencia
+  }, [user]); 
+
+  // Esta línea es clave para entender la diferencia
+  const tasksToDisplay = user.rol === 'colaborador' ? collaborationTasks : tasks;
 
   return (
     <div className="bitacora-background min-h-screen py-12">
       <div className="bitacora-container mx-auto px-6 max-w-6xl">
         <h1 className="bitacora-title text-center">
-          Registros de Muestreo Botánico
+          {user.rol === 'colaborador' ? 'Bitácoras Colaborativas' : 'Registros de Muestreo Botánico'}
         </h1>
 
-        {tasks.length > 0 &&
-          tasks.map((task, index) => (
-            <Link key={task._id} to={`/details/${task._id}`}>
-              <Card task={task} index={index} />
-            </Link>
+        {tasksToDisplay.length > 0 &&
+          tasksToDisplay.map((task, index) => (
+            <Card key={task._id} task={task} index={index} isCollaborator={user.rol === 'colaborador'} />
           ))}
       </div>
     </div>

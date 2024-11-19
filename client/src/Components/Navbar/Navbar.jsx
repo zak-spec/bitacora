@@ -7,7 +7,7 @@ const Navbar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggedOut, setIsLoggedOut] = useState(false); // Nuevo estado
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user, setCreatingUser } = useAuth();
   const navigate = useNavigate();
   const timerRef = useRef(null); // Referencia para el timer
 
@@ -34,6 +34,10 @@ const Navbar = () => {
       setIsLoading(false);
       setIsLoggedOut(false);
     }
+  };
+
+  const handleCreateUser = () => {
+    navigate('/register', { state: { isAdminCreating: true } });
   };
 
   // Si está en proceso de cierre de sesión o cargando, mostrar pantalla de carga
@@ -77,12 +81,31 @@ const Navbar = () => {
               <Link to="/profile" className="nav-link">
                 {isCollapsed ? '👤' : 'Perfil'}
               </Link>
-              <Link to="/tasks" className="nav-link">
-                {isCollapsed ? '📚' : 'Mis Bitácoras'}
-              </Link>
-              <Link to="/add-task" className="nav-link">
-                {isCollapsed ? '✏️' : 'Crear Bitácora'}
-              </Link>
+              {user.rol !== 'administrador' && (
+                <>
+                  <Link to="/tasks" className="nav-link">
+                    {isCollapsed ? '📚' : 'Mis Bitácoras'}
+                  </Link>
+                  {user.rol !== 'colaborador' && (
+                    <Link to="/add-task" className="nav-link">
+                      {isCollapsed ? '✏️' : 'Crear Bitácora'}
+                    </Link>
+                  )}
+                  <Link to="/search" className="nav-link">
+                    {isCollapsed ? '🔍' : 'Buscar'}
+                  </Link>
+                </>
+              )}
+              {user.rol === 'administrador' && (
+                <>
+                  <Link to="/users" className="nav-link">
+                    {isCollapsed ? '👥' : 'Usuarios'}
+                  </Link>
+                  <Link to="/create-user" className="nav-link">
+                    {isCollapsed ? '➕' : 'Crear Usuario'}
+                  </Link>
+                </>
+              )}
             </>
           )}
         </div>

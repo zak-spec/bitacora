@@ -12,9 +12,12 @@
   "dependencies": {
     "@mui/icons-material": "^6.1.6",
     "axios": "^1.7.7",
+    "date-fns": "^4.1.0",
     "firebase": "^11.0.1",
     "js-cookie": "^3.0.5",
+    "json2csv": "^6.0.0-alpha.2",
     "leaflet": "^1.9.4",
+    "pdfkit": "^0.15.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.1",

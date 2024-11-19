@@ -93,6 +93,26 @@ button[type="button"]:hover {
     box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
 }
 
+/* Estilos para el botón de eliminar imagen */
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.absolute:hover {
+    opacity: 1;
+}
+
+.relative:hover .absolute {
+    display: flex;
+}
+
 /* Estilos para input type file */
 input[type="file"] {
     background-color: #f8fafc;

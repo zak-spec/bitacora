@@ -3,12 +3,12 @@ import { useNavigate,useParams } from 'react-router-dom'
 import "./TasksFormPage.css"
 import { useTasks } from '../../Context/TasksContex'
 import { useForm } from 'react-hook-form';
-import { uploadFile } from '../../Firebase/Config';
+import { uploadFile, deleteFile } from '../../Firebase/Config';
 import { useAuth } from '../../Context/AuthContext';
-import { set } from 'mongoose';
 
 
 const TasksFormPage = () => {
+  const navigate = useNavigate(); // Mover useNavigate aquí arriba
   const {loading} = useAuth();
   const {createTasks,getTask,updateTask } = useTasks()
   // const [File, setFile] = useState([])
@@ -103,8 +103,6 @@ const TasksFormPage = () => {
 
   if(loading) return <h1>Cargando...</h1>;
 
-  const navigate = useNavigate()
-
 
 
   const [formData, setFormData] = useState({
@@ -148,50 +146,88 @@ const TasksFormPage = () => {
 
 
   const uploadAllFiles = async (files) => {
-    if (!files || !Array.isArray(files) || files.length === 0) {
+    try {
+      if (!files || !Array.isArray(files) || files.length === 0) {
+        return [];
+      }
+      const uploadPromises = files.map(async (file) => {
+        try {
+          const url = await uploadFile(file);
+          return url;
+        } catch (error) {
+          console.error('Error al subir archivo:', error);
+          return null;
+        }
+      });
+      const results = await Promise.all(uploadPromises);
+      return results.filter(url => url !== null);
+    } catch (error) {
+      console.error('Error en uploadAllFiles:', error);
       return [];
     }
-    const uploadPromises = files.map(file => uploadFile(file));
-    return Promise.all(uploadPromises);
   };
 
-  const onSubmit = handleReactHookFormSubmit(async (formValues, event) => {
+  const onSubmit = handleReactHookFormSubmit(async (formValues) => {
     try {
       setIsSubmitting(true);
-      
-      if (params.id) {
-        const processedFormValues = {
-          ...formValues,
-          samplingDateTime: new Date(formValues.samplingDateTime).toISOString(),
-          location: {
-            latitude: Number(formData.location.latitude),
-            longitude: Number(formData.location.longitude)
-          },
-          // Mantener las fotos existentes si no hay nuevas
-          samplingPhotos: Array.isArray(samplingFiles) && samplingFiles.length > 0 ? 
-            (typeof samplingFiles[0] === 'string' ? samplingFiles : await uploadAllFiles(samplingFiles)) : 
-            [],
-          speciesDetails: await Promise.all(formValues.speciesDetails.map(async (species, index) => ({
+      console.log('Iniciando envío del formulario');
+
+      const processedFormValues = {
+        ...formValues,
+        samplingDateTime: new Date(formValues.samplingDateTime).toISOString(),
+        location: {
+          latitude: Number(formData.location.latitude),
+          longitude: Number(formData.location.longitude)
+        }
+      };
+
+      // Procesar fotos de muestreo
+      let samplingPhotos = [];
+      if (samplingFiles.length > 0) {
+        console.log('Procesando fotos de muestreo');
+        // Separar URLs existentes de nuevos archivos
+        const existingUrls = samplingFiles.filter(file => typeof file === 'string');
+        const newFiles = samplingFiles.filter(file => typeof file !== 'string');
+        
+        const uploadedPhotos = await uploadAllFiles(newFiles);
+        samplingPhotos = [...existingUrls, ...uploadedPhotos];
+      }
+      processedFormValues.samplingPhotos = samplingPhotos;
+
+      // Procesar detalles de especies
+      processedFormValues.speciesDetails = await Promise.all(
+        formValues.speciesDetails.map(async (species, index) => {
+          console.log(`Procesando especie ${index + 1}`);
+          let speciesPhotos = [];
+          if (speciesFiles[index]?.length > 0) {
+            // Separar URLs existentes de nuevos archivos
+            const existingUrls = speciesFiles[index].filter(file => typeof file === 'string');
+            const newFiles = speciesFiles[index].filter(file => typeof file !== 'string');
+            
+            const uploadedPhotos = await uploadAllFiles(newFiles);
+            speciesPhotos = [...existingUrls, ...uploadedPhotos];
+          }
+          return {
             ...species,
             sampleQuantity: Number(species.sampleQuantity),
-            speciesPhotos: speciesFiles[index] ? 
-              (typeof speciesFiles[index][0] === 'string' ? 
-                speciesFiles[index] : 
-                await uploadAllFiles(speciesFiles[index])) : 
-              []
-          })))
-        };
+            speciesPhotos
+          };
+        })
+      );
 
+      console.log('Datos procesados:', processedFormValues);
+
+      if (params.id) {
         await updateTask(params.id, processedFormValues);
-        navigate('/tasks');
-        return;
+      } else {
+        await createTasks(processedFormValues);
       }
 
-      // Resto del código existente para crear nueva tarea
-      // ...existing code...
+      console.log('Operación completada con éxito');
+      navigate('/tasks');
     } catch (error) {
-      console.error('Error:', error);
-      alert(error.message || 'Error al procesar el formulario');
+      console.error('Error en el envío del formulario:', error);
+      alert('Error al procesar el formulario: ' + (error.message || 'Error desconocido'));
     } finally {
       setIsSubmitting(false);
     }
@@ -206,15 +242,77 @@ const TasksFormPage = () => {
     }));
   };
 
-  // Modificar handleFileChange para manejar ambos tipos de archivos
   const handleFileChange = (e, field, index) => {
-    const files = Array.from(e.target.files);
-    if (field === 'samplingPhotos') {
-      setSamplingFiles(files);
-    } else if (field === 'speciesPhotos') {
-      const newSpeciesFiles = [...speciesFiles];
-      newSpeciesFiles[index] = files;
-      setSpeciesFiles(newSpeciesFiles);
+    try {
+      const files = Array.from(e.target.files);
+      if (!files.length) return;
+
+      if (field === 'samplingPhotos') {
+        setSamplingFiles(prev => [...(prev || []), ...files]);
+      } else if (field === 'speciesPhotos') {
+        setSpeciesFiles(prev => {
+          const newFiles = [...prev];
+          newFiles[index] = [...(newFiles[index] || []), ...files];
+          return newFiles;
+        });
+      }
+    } catch (error) {
+      console.error('Error al manejar archivos:', error);
+    }
+  };
+
+  // Agregar estas nuevas funciones
+  const handleDeleteSamplingPhoto = async (indexToDelete) => {
+    try {
+      const fileToDelete = samplingFiles[indexToDelete];
+      
+      // Solo intentar eliminar si es una URL de Firebase
+      if (typeof fileToDelete === 'string' && fileToDelete.includes('firebasestorage.googleapis.com')) {
+        try {
+          const deleted = await deleteFile(fileToDelete);
+          if (!deleted) {
+            console.warn('No se pudo eliminar el archivo de Firebase:', fileToDelete);
+          }
+        } catch (error) {
+          console.error('Error al eliminar archivo de Firebase:', error);
+        }
+      }
+      
+      // Actualizar el estado local independientemente del resultado de Firebase
+      setSamplingFiles(prevFiles => 
+        prevFiles.filter((_, index) => index !== indexToDelete)
+      );
+    } catch (error) {
+      console.error('Error en handleDeleteSamplingPhoto:', error);
+      alert('Error al eliminar la foto. Los cambios se guardarán al enviar el formulario.');
+    }
+  };
+
+  const handleDeleteSpeciesPhoto = async (speciesIndex, photoIndex) => {
+    try {
+      const fileToDelete = speciesFiles[speciesIndex][photoIndex];
+      
+      // Solo intentar eliminar si es una URL de Firebase
+      if (typeof fileToDelete === 'string' && fileToDelete.includes('firebasestorage.googleapis.com')) {
+        try {
+          const deleted = await deleteFile(fileToDelete);
+          if (!deleted) {
+            console.warn('No se pudo eliminar el archivo de Firebase:', fileToDelete);
+          }
+        } catch (error) {
+          console.error('Error al eliminar archivo de Firebase:', error);
+        }
+      }
+
+      // Actualizar el estado local independientemente del resultado de Firebase
+      setSpeciesFiles(prevFiles => {
+        const newFiles = [...prevFiles];
+        newFiles[speciesIndex] = prevFiles[speciesIndex].filter((_, index) => index !== photoIndex);
+        return newFiles;
+      });
+    } catch (error) {
+      console.error('Error en handleDeleteSpeciesPhoto:', error);
+      alert('Error al eliminar la foto. Los cambios se guardarán al enviar el formulario.');
     }
   };
 
@@ -327,12 +425,20 @@ const TasksFormPage = () => {
           <div className="flex flex-wrap gap-2 mb-2">
             {samplingFiles && samplingFiles.map((url, idx) => (
               typeof url === 'string' && (
-                <img 
-                  key={idx} 
-                  src={url} 
-                  alt={`Muestreo ${idx + 1}`} 
-                  className="w-24 h-24 object-cover rounded"
-                />
+                <div key={idx} className="relative">
+                  <img 
+                    src={url} 
+                    alt={`Muestreo ${idx + 1}`} 
+                    className="w-24 h-24 object-cover rounded"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteSamplingPhoto(idx)}
+                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                  >
+                    ×
+                  </button>
+                </div>
               )
             ))}
           </div>
@@ -427,12 +533,20 @@ const TasksFormPage = () => {
                 <div className="flex flex-wrap gap-2 mb-2">
                   {speciesFiles[index] && speciesFiles[index].map((url, idx) => (
                     typeof url === 'string' && (
-                      <img 
-                        key={idx} 
-                        src={url} 
-                        alt={`Especie ${index + 1} foto ${idx + 1}`} 
-                        className="w-24 h-24 object-cover rounded"
-                      />
+                      <div key={idx} className="relative">
+                        <img 
+                          src={url} 
+                          alt={`Especie ${index + 1} foto ${idx + 1}`} 
+                          className="w-24 h-24 object-cover rounded"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteSpeciesPhoto(index, idx)}
+                          className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                        >
+                          ×
+                        </button>
+                      </div>
                     )
                   ))}
                 </div>
