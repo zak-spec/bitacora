@@ -23,7 +23,7 @@ export const uploadFile = async (file) => {
   try {
     if (!file) throw new Error('No se proporcionó archivo');
     
-    const storageRef = ref(storage, `files/${Date.now()}-${file.name}`);
+    const storageRef = ref(storage, `imagenes-bitacora/${v4()}`);
     await uploadBytes(storageRef, file);
     const url = await getDownloadURL(storageRef);
     return url;

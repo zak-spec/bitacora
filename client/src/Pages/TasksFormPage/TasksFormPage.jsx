@@ -15,6 +15,7 @@ const TasksFormPage = () => {
   const [samplingFiles, setSamplingFiles] = useState([]);
   const [speciesFiles, setSpeciesFiles] = useState([]); // Añadir este estado
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [geoError, setGeoError] = useState(null);
   const params = useParams();
   const { register, handleSubmit: handleReactHookFormSubmit, formState: { errors },setValue } = useForm({
     defaultValues: {
@@ -139,8 +140,16 @@ const TasksFormPage = () => {
             }
           }));
         },
-        (error) => console.error(error)
+        (error) => {
+          if (error.code === error.PERMISSION_DENIED) {
+            setGeoError("El permiso de geolocalización ha sido bloqueado. Puedes restablecerlo en la configuración de tu navegador.");
+          } else {
+            setGeoError("No se pudo obtener la ubicación. Por favor, verifica tu configuración.");
+          }
+        }
       );
+    } else {
+      setGeoError("La geolocalización no es soportada por este navegador.");
     }
   }, []);
 
@@ -340,6 +349,11 @@ const TasksFormPage = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
             <p className="mt-4 text-gray-700">Guardando muestra...</p>
           </div>
+        </div>
+      )}
+      {geoError && (
+        <div className="bg-red-100 text-red-700 p-4 mb-4 rounded">
+          {geoError}
         </div>
       )}
       

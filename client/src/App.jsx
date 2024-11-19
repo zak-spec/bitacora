@@ -18,7 +18,7 @@ import SearchPage from "./Pages/SearchPage/SearchPage";
 import Collaborator from "./Pages/Collaborator/Collaborator";
 import UsersPage from "./Pages/UsersPage/UsersPage";
 import CreateUserPage from "./Pages/CreateUserPage/CreateUserPage";
-
+import SearchUserPage from "./Pages/SearchUserPage/SearchUserPage";
 const App = () => {
   return (
     <div className="App">
@@ -42,6 +42,7 @@ const App = () => {
                   <Route path="/collaborator" element={<Collaborator />} />
                   <Route path="/search" element={<SearchPage />} />
                   <Route path="users" element={<UsersPage/>} />
+                  <Route path="/search-users" element={<SearchUserPage/>} />
                 </Route>
               </Routes>
             </Layout>

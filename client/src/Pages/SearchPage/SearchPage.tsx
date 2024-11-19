@@ -32,6 +32,7 @@ interface SearchFilters {
   };
   habitat: string;
   climate: string;
+  species: string;
 }
 
 export const SearchPage: React.FC = () => {
@@ -45,6 +46,7 @@ export const SearchPage: React.FC = () => {
     },
     habitat: '',
     climate: '',
+    species: '',
   });
   const [sortBy, setSortBy] = useState('date');
   const [filteredResults, setFilteredResults] = useState<Task[]>([]);
@@ -77,13 +79,17 @@ export const SearchPage: React.FC = () => {
         const taskDate = new Date(task.samplingDateTime);
         const startDate = filters.dateRange.start ? new Date(filters.dateRange.start) : null;
         const endDate = filters.dateRange.end ? new Date(filters.dateRange.end) : null;
-        
+
+        if (endDate) {
+          endDate.setDate(endDate.getDate() + 1);
+        }
+
         if (startDate && endDate) {
-          return taskDate >= startDate && taskDate <= endDate;
+          return taskDate >= startDate && taskDate < endDate;
         } else if (startDate) {
           return taskDate >= startDate;
         } else if (endDate) {
-          return taskDate <= endDate;
+          return taskDate < endDate;
         }
         return true;
       });
@@ -112,6 +118,16 @@ export const SearchPage: React.FC = () => {
       results = results.filter(task => 
         task.weatherConditions.toLowerCase()
           .includes(filters.climate.toLowerCase())
+      );
+    }
+
+    // Filtro por especies
+    if (filters.species) {
+      results = results.filter(task => 
+        task.speciesDetails.some(species =>
+          species.scientificName.toLowerCase().includes(filters.species.toLowerCase()) ||
+          species.commonName.toLowerCase().includes(filters.species.toLowerCase())
+        )
       );
     }
 
@@ -255,6 +271,17 @@ export const SearchPage: React.FC = () => {
             />
           </div>
 
+          <div className="filter-group">
+            <label>Especies:</label>
+            <input
+              type="text"
+              value={filters.species}
+              onChange={(e) => setFilters({...filters, species: e.target.value})}
+              placeholder="Filtro por especie..."
+              className="search-input"
+            />
+          </div>
+
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
@@ -277,8 +304,8 @@ export const SearchPage: React.FC = () => {
             <p>No se encontraron resultados</p>
           </div>
         ) : (
-          filteredResults.map((task: Task) => (
-           < Link to={`/details/${task._id}`}> 
+          filteredResults.map((task: Task, index) => (
+           < Link key={index} to={`/details/${task._id}`}> 
             <div key={task._id} className="result-card">
               <h3>📝 {task.title}</h3>
               <p>📅 Fecha: {new Date(task.samplingDateTime).toLocaleDateString()}</p>

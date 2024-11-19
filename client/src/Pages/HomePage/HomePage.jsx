@@ -1,6 +1,6 @@
 import {useState,useEffect} from 'react';
 import { Link,Navigate } from 'react-router-dom';
-import Navbar from '../../Components/Navbar/Navbar';
+import Layout from '../../Components/Layout/Layout';
 import Header from '../../Components/Header/Header';
 import './HomePage.css';
 import { useAuth } from '../../Context/AuthContext';
@@ -31,14 +31,12 @@ if (isAuthenticated&& !isLoading) {
 }
 
   return (
-    <>
-      {/* <Navbar /> */}
+    <div>
       <Header
         title="Bitácora de Campo Botánica"
         subtitle="Sistema Digital de Registro para Investigación Botánica"
         backgroundImage="/images/botanical-bg.jpg"
-      >
-      </Header>
+      />
       <section className="quick-access">
         <h2>Acceso Rápido</h2>
         <div className="quick-access-grid">
@@ -84,7 +82,7 @@ if (isAuthenticated&& !isLoading) {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

@@ -245,3 +245,34 @@
   margin: 0.25rem 0;
   color: #4a5568;
 }
+
+@media (max-width: 768px) {
+  .bitacora-container {
+    padding: 1rem;
+  }
+
+  .bitacora-title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .species-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .photo-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+
+  .bitacora-entry {
+    padding: 1.5rem;
+  }
+
+  .info-section {
+    padding: 1rem;
+  }
+}

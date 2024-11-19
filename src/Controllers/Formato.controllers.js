@@ -8,7 +8,6 @@ export const exportToCSV = async (req, res) => {
         const { id } = req.params;
         const task = await Task.findById(id)
             .populate('user', 'username email')
-            .populate('collaborators', 'username email')
             .lean();
 
         if (!task) {
@@ -18,7 +17,7 @@ export const exportToCSV = async (req, res) => {
         // Preparar datos de especies en formato tabular
         const speciesRows = task.speciesDetails.map(species => ({
             'ID Bitácora': task._id,
-            'Título Bitácora': task.title,
+            'Título': task.title,
             'Fecha Muestreo': new Date(task.samplingDateTime).toLocaleString(),
             'Ubicación': `${task.location?.latitude}, ${task.location?.longitude}`,
             'Condiciones Climáticas': task.weatherConditions,
@@ -78,8 +77,7 @@ export const exportToPDF = async (req, res) => {
     try {
         const { id } = req.params;
         const task = await Task.findById(id)
-            .populate('user', 'username email')
-            .populate('collaborators', 'username email');
+            .populate('user', 'username email');
 
         if (!task) {
             return res.status(404).json({ message: "Bitácora no encontrada" });
@@ -208,29 +206,50 @@ export const exportToPDF = async (req, res) => {
 
             doc.moveDown(6);
 
-            // Fotos de la especie en grid
-            if (species.speciesPhotos?.length > 0) {
-                for (let i = 0; i < species.speciesPhotos.length; i += 2) {
-                    addPageIfNeeded(doc, 300);
-                    const row = species.speciesPhotos.slice(i, i + 2);
-                    
-                    for (let j = 0; j < row.length; j++) {
-                        try {
-                            const response = await axios.get(row[j], { responseType: 'arraybuffer' });
-                            const imageBuffer = Buffer.from(response.data);
-                            doc.image(imageBuffer, {
-                                x: 50 + (j * 270),
-                                width: 250,
-                                height: 200,
-                                fit: [250, 200]
-                            });
-                        } catch (error) {
-                            console.error('Error al cargar imagen de especie:', error);
-                        }
+            // Fotos de la especie
+            if (species.speciesPhotos && species.speciesPhotos.length > 0) {
+                doc.moveDown();
+                doc.font('Helvetica-Bold').fontSize(12)
+                   .text('Fotos de la especie:', 60);
+                doc.moveDown();
+
+                let currentX = 50;
+                let currentY = doc.y;
+                const imageWidth = 250;
+                const imageHeight = 200;
+                const imagesPerRow = 2;
+
+                for (let i = 0; i < species.speciesPhotos.length; i++) {
+                    if (i > 0 && i % imagesPerRow === 0) {
+                        currentX = 50;
+                        currentY += imageHeight + 20;
+                        addPageIfNeeded(doc, imageHeight + 50);
                     }
-                    doc.moveDown(15);
+
+                    try {
+                        const response = await axios.get(species.speciesPhotos[i], { 
+                            responseType: 'arraybuffer',
+                            timeout: 5000 // Timeout de 5 segundos
+                        });
+                        
+                        const imageBuffer = Buffer.from(response.data);
+                        doc.image(imageBuffer, currentX, currentY, {
+                            width: imageWidth,
+                            height: imageHeight,
+                            fit: [imageWidth, imageHeight]
+                        });
+
+                        currentX += imageWidth + 20;
+                    } catch (error) {
+                        console.error(`Error al cargar imagen de especie ${species.scientificName}:`, error);
+                        // Añadir mensaje de error en el PDF
+                        doc.text('Error al cargar imagen', currentX, currentY);
+                    }
                 }
+                
+                doc.moveDown(imageHeight / 20 + 2);
             }
+
             doc.moveDown(2);
         }
 

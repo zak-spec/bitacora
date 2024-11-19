@@ -29,8 +29,8 @@ function TasksPage() {
   const tasksToDisplay = user.rol === 'colaborador' ? collaborationTasks : tasks;
 
   return (
-    <div className="bitacora-background min-h-screen py-12">
-      <div className="bitacora-container mx-auto px-6 max-w-6xl">
+    <div className="bitacora-background min-h-screen py-6 sm:py-12">
+      <div className="bitacora-container mx-auto px-4 sm:px-6 max-w-6xl">
         <h1 className="bitacora-title text-center">
           {user.rol === 'colaborador' ? 'Bitácoras Colaborativas' : 'Registros de Muestreo Botánico'}
         </h1>

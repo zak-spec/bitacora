@@ -10,6 +10,7 @@ const Navbar = () => {
   const { isAuthenticated, logout, user, setCreatingUser } = useAuth();
   const navigate = useNavigate();
   const timerRef = useRef(null); // Referencia para el timer
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Limpiar el timer cuando el componente se desmonte
   useEffect(() => {
@@ -40,6 +41,10 @@ const Navbar = () => {
     navigate('/register', { state: { isAdminCreating: true } });
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   // Si está en proceso de cierre de sesión o cargando, mostrar pantalla de carga
   if (isLoading || isLoggedOut) {
     return <div className="loading-container"><h1>Cerrando sesión...</h1></div>;
@@ -53,18 +58,26 @@ const Navbar = () => {
   return (
     <nav className={`navbar ${isCollapsed ? 'collapsed' : ''} ${isAuthenticated ? 'authenticated' : ''}`}>
       <div className="navbar-brand">
-        {isAuthenticated && (
-          <button 
-            className="collapse-button"
-            onClick={() => setIsCollapsed(!isCollapsed)}
-          >
-            {isCollapsed ? '→' : '←'}
-          </button>
-        )}
         <Link to="/" className="logo">🌿 {!isCollapsed && 'Bitácora'}</Link>
+        {isAuthenticated && (
+          <>
+            <button 
+              className="mobile-toggle"
+              onClick={toggleMobileMenu}
+            >
+              {isMobileMenuOpen ? '✕' : '☰'}
+            </button>
+            <button 
+              className="collapse-button hide-mobile"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+            >
+              {isCollapsed ? '→' : '←'}
+            </button>
+          </>
+        )}
       </div>
 
-      <div className="navbar-menu">
+      <div className={`navbar-menu ${isMobileMenuOpen ? 'show-mobile' : ''}`}>
         <div className="nav-links">
           {!isAuthenticated && (
             <>

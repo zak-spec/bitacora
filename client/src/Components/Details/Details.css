@@ -77,6 +77,10 @@
 }
 
 .info-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
   padding: 1.25rem;
   background-color: #f8f9fa;
   border-radius: 8px;
@@ -127,27 +131,40 @@
 }
 
 .coordinate-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background-color: #f8fafc;
-  padding: 1rem;
+  padding: 1.5rem;
   border-radius: 8px;
   border: 1px solid #e2e8f0;
-  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  min-width: 200px;
 }
 
 .coordinate-label {
   display: block;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: #475569;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .coordinate-value {
   display: block;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 500;
   color: #0f766e;
   font-family: 'Consolas', monospace;
+  word-wrap: break-word;
+  padding: 0.75rem;
+  background-color: #f0fdfa;
+  border-radius: 4px;
+  width: 100%;
+  text-align: center;
 }
 
 /* Ajustes para el diseño de dos columnas */
@@ -194,5 +211,55 @@
   .export-buttons {
     flex-direction: column;
     gap: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .bitacora-entry {
+    padding: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .flex.justify-between {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .flex.gap-4 {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .flex.gap-4 button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  h2.text-4xl {
+    font-size: 1.75rem;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .species-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .photo-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+
+  .map-container {
+    height: 250px;
+  }
+
+  .coordinate-box {
+    padding: 0.5rem;
+  }
+
+  .species-card {
+    padding: 1rem;
   }
 }

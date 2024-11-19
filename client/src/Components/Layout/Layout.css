@@ -1,18 +1,30 @@
-.layout {
+.layout-wrapper {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  /* width: 100x; */
 }
 
-.layout.authenticated {
-  display: grid;
-  grid-template-columns: 1fr auto;
+.layout-wrapper.authenticated {
+  flex-direction: row;
+  justify-content: flex-start; /* Cambiado a flex-start */
+}
+
+.layout-content {
+  flex: 1;
+  width: calc(100% - 250px); /* Resta el ancho del navbar */
+  min-height: 100vh;
+  order: 1; /* Asegura que el contenido esté primero */
+  display: flex;          /* Añadido */
+  justify-content: center; /* Añadido */
 }
 
 .main-content {
-  padding: 20px;
-  overflow-y: auto;
-  flex: 1;
+  padding: 1rem;
+  width: 100%;
+  width: 1000vh;     /* Añadido - limita el ancho máximo */
+  margin: 0 auto;        /* Centra horizontalmente */
+  max-width: 1200px;     /* Limita el ancho máximo */
 }
 
 /* Asegurarse de que el navbar esté en la parte superior cuando no está autenticado */
@@ -20,8 +32,33 @@
   order: -1; /* Esto fuerza al navbar a estar al principio */
 }
 
+.layout-wrapper.authenticated .navbar {
+  order: 2; /* Coloca el navbar después del contenido */
+}
+
+/* Media queries */
 @media (max-width: 768px) {
-  .layout.authenticated {
-    display: block;
+  .layout-wrapper.authenticated {
+    flex-direction: column;
+  }
+
+  .layout-content {
+    width: 100%;
+    margin-top: 60px; /* Espacio para el navbar fijo */
+  }
+
+  .layout-wrapper.authenticated .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: auto !important;
+    transform: none;
+  }
+
+  .main-content {
+    padding: 1rem;
+    width: 95%;          /* Añadido - ajusta el ancho en móviles */
+    margin: 0 auto;      /* Añadido */
   }
 }

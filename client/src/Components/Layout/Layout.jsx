@@ -5,12 +5,15 @@ import { useAuth } from '../../Context/AuthContext';
 
 const Layout = ({ children }) => {
   const { isAuthenticated } = useAuth();
+  
   return (
-    <div className={`layout ${isAuthenticated ? 'authenticated' : ''}`}>
-      <main className="main-content">
-        {children}
-      </main>
+    <div className={`layout-wrapper ${isAuthenticated ? 'authenticated' : ''}`}>
       <Navbar />
+      <div className="layout-content">
+        <main className="main-content">
+          {children}
+        </main>
+      </div>
     </div>
   );
 };

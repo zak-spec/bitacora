@@ -11,22 +11,22 @@ const Details = ({ task }) => {
     }
 
     return (
-        <div className="bitacora-entry mb-12 p-8 animate-fadeIn">
-            <div className="flex justify-between items-center mb-8">
-                <h2 className="text-4xl font-bold text-emerald-900 border-b-2 border-emerald-200 pb-3">
+        <div className="bitacora-entry mb-6 sm:mb-12 p-4 sm:p-8 animate-fadeIn">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-8">
+                <h2 className="text-2xl sm:text-4xl font-bold text-emerald-900 border-b-2 border-emerald-200 pb-3 w-full sm:w-auto mb-4 sm:mb-0">
                     {task.title}
                 </h2>
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 w-full sm:w-auto">
                     <button
                         onClick={() => exportToPDF(task)}
-                        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
+                        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
                     >
                         <i className="fas fa-file-pdf"></i>
                         Exportar PDF
                     </button>
                     <button
                         onClick={() => exportToCSV(task)}
-                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
                     >
                         <i className="fas fa-file-csv"></i>
                         Exportar CSV
