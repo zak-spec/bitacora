@@ -3,6 +3,7 @@ import { authRequired } from "../Middlewares/ValidateToken.js";
 import { getTasks, getTask, createTask, deleteTask, updateTask } from "../Controllers/Tasks.controllers.js";
 import { validateSchema } from "../Middlewares/Validator.middleware.js";
 import { TaskSchema } from "../Schemas/Task.schema.js";
+
 const router = Router();
 
 router.get("/tasks", authRequired, getTasks);

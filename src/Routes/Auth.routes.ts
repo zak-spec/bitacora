@@ -1,4 +1,3 @@
-// src/Routes/auth.routes.js
 import { Router } from "express";
 import { authRequired, adminRequired } from "../Middlewares/ValidateToken.js";
 import { login, register, logout, profile, verifyToken } from "../Controllers/Auth.controllers.js";
@@ -16,4 +15,5 @@ router.get("/verifyToken", verifyToken);
 router.put("/user/:id", adminRequired, updateUser);
 router.delete("/user/:id", authRequired, deleteUser);
 router.get("/users", adminRequired, getAllUsers);
+
 export default router;
