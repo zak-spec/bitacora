@@ -4,7 +4,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/Server/index.js"
+    "dev": "tsx watch src/Server/Index.ts",
+    "build": "tsc",
+    "start": "node dist/Server/Index.js"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +27,17 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "@types/bcryptjs": "^3.0.0",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/json2csv": "^5.0.7",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^25.2.3",
+    "@types/pdfkit": "^0.17.5",
+    "nodemon": "^3.1.7",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
   }
 }
