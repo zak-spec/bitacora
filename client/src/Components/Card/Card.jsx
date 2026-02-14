@@ -15,24 +15,20 @@ function Card({ task, index, isCollaborator }) {
   const handleDelete = async(e) => {
     e.stopPropagation();
     e.preventDefault();
-  try {
-    await deleteTask(task._id);
-  } catch (error) {
-    console.log(error);
-    
-  }
+    if (!window.confirm('¿Estás seguro de que deseas eliminar esta bitácora? Esta acción no se puede deshacer.')) {
+      return;
+    }
+    try {
+      await deleteTask(task._id);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleEdit = (e) => {
     e.stopPropagation();
     e.preventDefault();
     navigate(`/tasks/${task._id}`);
-  };
-
-  const handleUpdate = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    console.log('Actualizando:', task._id);
   };
 
   return (

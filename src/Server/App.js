@@ -8,6 +8,7 @@ import tasksRoutes from '../Routes/Tasks.routes.js';
 import Formato from '../Routes/Formato.routes.js';
 import Collaborator from '../Routes/Collaborator.routes.js';
 import cors from 'cors';
+import { CORS_ORIGIN } from './Config.js';
 
 const app = express();
 
@@ -15,7 +16,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: CORS_ORIGIN,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],

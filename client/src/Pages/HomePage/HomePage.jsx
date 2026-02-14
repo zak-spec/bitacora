@@ -1,6 +1,5 @@
-import {useState,useEffect} from 'react';
-import { Link,Navigate } from 'react-router-dom';
-import Layout from '../../Components/Layout/Layout';
+import {useState, useEffect} from 'react';
+import { Navigate } from 'react-router-dom';
 import Header from '../../Components/Header/Header';
 import './HomePage.css';
 import { useAuth } from '../../Context/AuthContext';

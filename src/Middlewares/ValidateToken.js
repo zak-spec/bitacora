@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { TOKEN_SECRET } from "../Server/Config.js";
+import User from "../Models/User.model.js";
 
 export const authRequired = (req, res, next) => {
   try {

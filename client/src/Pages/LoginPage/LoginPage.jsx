@@ -42,7 +42,6 @@ const LoginPage = () => {
           <div key={index} className="flex items-center gap-2 p-3 mb-4 rounded-lg error-message">
             <FaExclamationCircle />
             <span>{error}</span>
-            {console.log("error:", error)}
           </div>
         ))}
         

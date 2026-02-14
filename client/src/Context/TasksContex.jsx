@@ -2,7 +2,6 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { createTaskRequest, getTasksRequest, getTaskRequest,deleteTaskRequest,updateTaskRequest} from '../Api/Tasks';
 import {exportFormatoCSV,exportFormatoPDF} from '../Api/Formato';
 import { getTasksByEmail } from '../Api/Collaborator';
-import { useAuth } from './AuthContext';
 
 
 // Crear el contexto con un valor inicial por defecto
@@ -25,14 +24,12 @@ export function useTasks() {
 
 export function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([]);
-  const [collaborationTasks, setCollaborationTasks] = useState([]); // Nuevo estado
-  const [email, setEmail] = useState(''); // Nuevo estado
-   const {rol}=useAuth(); 
+  const [collaborationTasks, setCollaborationTasks] = useState([]);
+
   const getTasks = async () => {
     try {
       const res = await getTasksRequest();
-      console.log(res);
-      setTasks(res.data); // Corregir para usar res.data
+      setTasks(res.data);
     } catch (error) {
       console.error(error);
     }
@@ -59,31 +56,23 @@ export function TasksProvider({ children }) {
   };
 
 const deleteTask = async (id) => {
-  try{
-    const res=await deleteTaskRequest(id);
-    console.log(res);
-    
-    if(res.status===200){
-      console.log('Task deleted');
-      
-      setTasks(tasks.filter((task)=>task._id!==id));
+  try {
+    const res = await deleteTaskRequest(id);
+    if (res.status === 200) {
+      setTasks(tasks.filter((task) => task._id !== id));
     }
-
-  } catch(error){
+  } catch (error) {
     console.error(error);
   }
 };
-const updateTask = async (id,task) => {
-  try{
-    const res=await updateTaskRequest(id,task);
-    console.log(res);
-    
-    if(res.status===200){
-      console.log('Task updated');
-      setTasks(tasks.map((task)=>task._id===id?res.data:task));
-    }
 
-  } catch(error){
+const updateTask = async (id, task) => {
+  try {
+    const res = await updateTaskRequest(id, task);
+    if (res.status === 200) {
+      setTasks(tasks.map((t) => t._id === id ? res.data : t));
+    }
+  } catch (error) {
     console.error(error);
   }
 };  

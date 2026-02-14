@@ -12,20 +12,15 @@ const CreateUserPage = () => {
 
   // Proteger la ruta
   useEffect(() => {
-    console.log('Verificando autorización:', { isAuthenticated, userRole: user?.rol });
     if (!isAuthenticated || user?.rol !== 'administrador') {
-      console.log('Usuario no autorizado, redirigiendo...');
       navigate('/users');
     }
   }, [isAuthenticated, user]);
 
   const onSubmit = handleSubmit(async (values) => {
-    console.log('Intentando crear usuario con datos:', values);
     try {
       const result = await signup(values);
-      console.log('Resultado del registro:', result);
       if (result.success) {
-        // Dar tiempo para que se actualice la lista de usuarios
         setTimeout(() => {
           navigate('/users');
         }, 1000);
@@ -49,7 +44,7 @@ const CreateUserPage = () => {
           Crear Nuevo Usuario
         </h1>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={onSubmit} className="space-y-6">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-200 mb-2">
               Usuario
@@ -107,11 +102,11 @@ const CreateUserPage = () => {
               <input
                 type="password"
                 {...register("password", { 
-                  required: "La contraseña es obligatoria"
-                  // minLength: {
-                  //   value: 6,
-                  //   message: "La contraseña debe tener al menos 6 caracteres"
-                  // }
+                  required: "La contraseña es obligatoria",
+                  minLength: {
+                    value: 6,
+                    message: "La contraseña debe tener al menos 6 caracteres"
+                  }
                 })}
                 className="w-full pl-10 pr-4 py-3 rounded-lg input-field"
                 placeholder="Tu contraseña"
@@ -138,7 +133,7 @@ const CreateUserPage = () => {
                 className="w-full pl-10 pr-4 py-3 rounded-lg input-field"
               >
                 <option value="">Seleccionar rol</option>           
-                <option value="administrador">administrador</option>
+                <option value="administrador">Administrador</option>
                 <option value="investigador">Investigador</option>
                 <option value="colaborador">Colaborador</option>
               </select>

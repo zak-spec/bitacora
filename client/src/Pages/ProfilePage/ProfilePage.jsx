@@ -5,6 +5,8 @@ import './ProfilePage.css'
 const ProfilePage = () => {
   const { user } = useAuth();
 
+  if (!user) return <h1>Cargando...</h1>;
+
   return (
     <div className="profile-container">
       <div className="profile-card">
@@ -24,6 +26,10 @@ const ProfilePage = () => {
           <div className="detail-item">
             <span className="detail-label">Correo:</span>
             <span className="detail-value">{user.email}</span>
+          </div>
+          <div className="detail-item">
+            <span className="detail-label">Rol:</span>
+            <span className="detail-value">{user.rol}</span>
           </div>
         </div>
       </div>
