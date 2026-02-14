@@ -1,0 +1,64 @@
+<div class="search-container">
+  <form (ngSubmit)="onSearch()">
+    <div class="search-bar">
+      <input type="text" [(ngModel)]="searchQuery" name="searchQuery"
+        (ngModelChange)="filterAndSort()"
+        placeholder="🔍 Buscar por título, ubicación o especies..."
+        class="search-input" />
+      <button type="button" (click)="toggleAdvanced()" class="advanced-toggle"
+        [class.active]="showAdvanced">
+        {{ showAdvanced ? 'Búsqueda Simple' : 'Búsqueda Avanzada' }}
+      </button>
+    </div>
+
+    @if (showAdvanced) {
+      <div class="filters-section">
+        <div class="filter-group">
+          <label>Rango de fechas:</label>
+          <input type="date" [(ngModel)]="filters.dateRange.start" name="dateStart" (ngModelChange)="filterAndSort()" />
+          <input type="date" [(ngModel)]="filters.dateRange.end" name="dateEnd" (ngModelChange)="filterAndSort()" />
+        </div>
+        <div class="filter-group">
+          <label>Ubicación:</label>
+          <input type="text" [(ngModel)]="filters.location.latitude" name="lat" placeholder="Latitud" (ngModelChange)="filterAndSort()" />
+          <input type="text" [(ngModel)]="filters.location.longitude" name="lng" placeholder="Longitud" (ngModelChange)="filterAndSort()" />
+        </div>
+        <div class="filter-group">
+          <label>Hábitat:</label>
+          <input type="text" [(ngModel)]="filters.habitat" name="habitat" placeholder="Tipo de hábitat..." (ngModelChange)="filterAndSort()" />
+        </div>
+        <div class="filter-group">
+          <label>Clima:</label>
+          <input type="text" [(ngModel)]="filters.climate" name="climate" placeholder="Condiciones climáticas..." (ngModelChange)="filterAndSort()" />
+        </div>
+        <div class="filter-group">
+          <label>Especies:</label>
+          <input type="text" [(ngModel)]="filters.species" name="species" placeholder="Filtro por especie..." (ngModelChange)="filterAndSort()" />
+        </div>
+        <select [(ngModel)]="sortBy" name="sortBy" (ngModelChange)="filterAndSort()" class="sort-select">
+          <option value="date">Ordenar por fecha</option>
+          <option value="location">Ordenar por ubicación</option>
+        </select>
+      </div>
+    }
+  </form>
+
+  <div class="results-container">
+    @if (filteredResults().length === 0) {
+      <div class="no-results">
+        <p>🔍 No se encontraron resultados</p>
+      </div>
+    } @else {
+      @for (task of filteredResults(); track task._id) {
+        <a [routerLink]="['/details', task._id]" class="result-card">
+          <h3>📝 {{ task.title }}</h3>
+          <p>📅 Fecha: {{ task.samplingDateTime | date:'mediumDate' }}</p>
+          <p>📍 Ubicación: {{ task.location.latitude }}, {{ task.location.longitude }}</p>
+          <p>🌿 Especies: {{ task.speciesDetails.length }}</p>
+          <p>🏞️ Hábitat: {{ task.habitatDescription }}</p>
+          <p>🌤️ Clima: {{ task.weatherConditions }}</p>
+        </a>
+      }
+    }
+  </div>
+</div>

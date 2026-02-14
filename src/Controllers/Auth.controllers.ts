@@ -27,7 +27,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const passwordHash = await bcrypt.hash(password, 10);
     const newUser = new User({ email, password: passwordHash, username, rol });
 
-    const isAdminRequest = req.user && req.user.rol === "administrador";
     const userSave = await newUser.save();
 
     // Si es una creación por administrador, mantener el token existente
@@ -60,7 +59,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       rol: userSave.rol,
       createdAt: userSave.createdAt,
       updatedAt: userSave.updatedAt,
-      isAdminCreated: !!isAdminRequest,
+      isAdminCreated: false,
     });
   } catch (error) {
     console.error(error);
@@ -114,19 +113,24 @@ export const logout = (_req: Request, res: Response): void => {
 };
 
 export const profile = async (req: Request, res: Response): Promise<void> => {
-  const userFound = await User.findById(req.user!.id);
-  if (!userFound) {
-    res.status(400).json({ message: "Usuario no encontrado" });
-    return;
+  try {
+    const userFound = await User.findById(req.user!.id);
+    if (!userFound) {
+      res.status(400).json({ message: "Usuario no encontrado" });
+      return;
+    }
+    res.json({
+      id: userFound._id,
+      username: userFound.username,
+      email: userFound.email,
+      rol: userFound.rol,
+      createdAt: userFound.createdAt,
+      updatedAt: userFound.updatedAt,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error del servidor" });
   }
-  res.json({
-    id: userFound._id,
-    username: userFound.username,
-    email: userFound.email,
-    rol: userFound.rol,
-    createdAt: userFound.createdAt,
-    updatedAt: userFound.updatedAt,
-  });
 };
 
 export const verifyToken = async (req: Request, res: Response): Promise<void> => {

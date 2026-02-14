@@ -1,0 +1,82 @@
+<div class="flex items-center justify-center min-h-screen login-background">
+  <div class="w-full max-w-md p-8 m-4 rounded-xl login-card">
+    @for (error of authStore.errors(); track error) {
+      <div class="flex items-center gap-2 p-3 mb-4 rounded-lg error-message">
+        <span>⚠️</span>
+        <span>{{ error }}</span>
+      </div>
+    }
+
+    <h1 class="text-3xl font-bold text-white mb-8 text-center">Registro</h1>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+      <div>
+        <label class="block text-sm font-medium text-gray-200 mb-2">Usuario</label>
+        <div class="relative">
+          <span class="input-icon">👤</span>
+          <input
+            type="text"
+            formControlName="username"
+            class="w-full pl-10 pr-4 py-3 rounded-lg input-field"
+            placeholder="Tu nombre de usuario"
+          />
+        </div>
+        @if (form.get('username')?.invalid && form.get('username')?.touched) {
+          <p class="text-red-400 text-sm mt-1">El nombre de usuario es obligatorio</p>
+        }
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-200 mb-2">Correo</label>
+        <div class="relative">
+          <span class="input-icon">📧</span>
+          <input
+            type="email"
+            formControlName="email"
+            class="w-full pl-10 pr-4 py-3 rounded-lg input-field"
+            placeholder="Tu correo electrónico"
+          />
+        </div>
+        @if (form.get('email')?.invalid && form.get('email')?.touched) {
+          <p class="text-red-400 text-sm mt-1">El email es obligatorio</p>
+        }
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-200 mb-2">Contraseña</label>
+        <div class="relative">
+          <span class="input-icon">🔒</span>
+          <input
+            type="password"
+            formControlName="password"
+            class="w-full pl-10 pr-4 py-3 rounded-lg input-field"
+            placeholder="Tu contraseña"
+          />
+        </div>
+        @if (form.get('password')?.invalid && form.get('password')?.touched) {
+          <p class="text-red-400 text-sm mt-1">La contraseña debe tener al menos 6 caracteres</p>
+        }
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-200 mb-2">Rol</label>
+        <div class="relative">
+          <span class="input-icon">🏷️</span>
+          <select formControlName="rol" class="w-full pl-10 pr-4 py-3 rounded-lg input-field">
+            <option value="investigador">Investigador</option>
+            <option value="colaborador">Colaborador</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="w-full py-3 rounded-lg font-semibold login-button" [disabled]="form.invalid">
+        Registrarse
+      </button>
+    </form>
+
+    <p class="text-center text-gray-300 mt-6">
+      ¿Ya tienes cuenta?
+      <a routerLink="/login" class="text-green-400 hover:underline">Inicia sesión</a>
+    </p>
+  </div>
+</div>

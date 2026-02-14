@@ -1,0 +1,19 @@
+<div class="collaborator-container">
+  <h2 class="collaborator-header">Verificación de Colaborador</h2>
+  <form (ngSubmit)="onSubmit()" class="collaborator-form">
+    @if (message) {
+      <div class="bg-yellow-100 text-yellow-800 p-3 mb-4 rounded text-sm">
+        {{ message }}
+      </div>
+    }
+    <input
+      type="email"
+      [(ngModel)]="email"
+      name="email"
+      placeholder="Ingrese su correo electrónico"
+      class="email-search"
+      required
+    />
+    <button type="submit" class="btn-verify">Verificar</button>
+  </form>
+</div>

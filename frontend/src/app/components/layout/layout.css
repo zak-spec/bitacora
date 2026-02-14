@@ -1,0 +1,19 @@
+.layout-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  transition: margin-left 0.3s ease;
+}
+
+.layout-wrapper.authenticated .main-content {
+  margin-left: 250px;
+}
+
+@media (max-width: 768px) {
+  .layout-wrapper.authenticated .main-content {
+    margin-left: 0;
+  }
+}

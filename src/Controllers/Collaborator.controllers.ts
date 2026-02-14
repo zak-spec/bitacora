@@ -79,7 +79,7 @@ export const addCollaborator = async (req: Request, res: Response): Promise<void
 export const removeCollaborator = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const { collaboratorId } = req.body;
+    const { email, collaboratorId } = req.body;
 
     const task = await Task.findById(id);
     if (!task) {
@@ -92,8 +92,25 @@ export const removeCollaborator = async (req: Request, res: Response): Promise<v
       return;
     }
 
+    let targetId = collaboratorId;
+
+    // Si se envía email en vez de collaboratorId, buscar el usuario
+    if (!targetId && email) {
+      const user = await User.findOne({ email });
+      if (!user) {
+        res.status(404).json({ message: "Usuario no encontrado" });
+        return;
+      }
+      targetId = user._id.toString();
+    }
+
+    if (!targetId) {
+      res.status(400).json({ message: "Se requiere email o collaboratorId" });
+      return;
+    }
+
     task.collaborators = task.collaborators.filter(
-      (collab) => collab.toString() !== collaboratorId
+      (collab) => collab.toString() !== targetId
     ) as typeof task.collaborators;
 
     await task.save();

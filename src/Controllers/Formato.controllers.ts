@@ -35,7 +35,7 @@ export const exportToCSV = async (req: Request, res: Response): Promise<void> =>
 
     const fields = [
       "ID Bitácora",
-      "Título Bitácora",
+      "Título",
       "Fecha Muestreo",
       "Ubicación",
       "Condiciones Climáticas",

@@ -1,0 +1,150 @@
+.card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.card-header {
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #1a472a, #2d5016);
+  color: white;
+}
+
+.card-header h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.1rem;
+}
+
+.card-header .date {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.card-map {
+  height: 150px;
+  width: 100%;
+}
+
+.card-photos {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  overflow-x: auto;
+}
+
+.thumbnail {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.card-info {
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9rem;
+}
+
+.card-info p {
+  margin: 0.25rem 0;
+}
+
+.species-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0 1.25rem 0.75rem;
+}
+
+.species-item {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.8rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.sci-name {
+  font-style: italic;
+  font-weight: 600;
+}
+
+.common-name {
+  color: #666;
+}
+
+.quantity {
+  background: #166534;
+  color: white;
+  border-radius: 10px;
+  padding: 0 0.4rem;
+  font-size: 0.75rem;
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid #eee;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.btn-view {
+  background: #166534;
+  color: white;
+}
+
+.btn-view:hover {
+  background: #14532d;
+}
+
+.btn-edit {
+  background: #ca8a04;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #a16207;
+}
+
+.btn-delete {
+  background: #dc2626;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #b91c1c;
+}
+
+.btn-cancel {
+  background: #6b7280;
+  color: white;
+}
+
+.delete-confirm {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
