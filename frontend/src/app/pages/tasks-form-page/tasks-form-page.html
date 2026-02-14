@@ -1,0 +1,162 @@
+@if (isSubmitting) {
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+      <p class="mt-4 text-gray-700">Guardando muestra...</p>
+    </div>
+  </div>
+}
+
+<div class="max-w-4xl mx-auto p-4">
+  @if (geoError) {
+    <div class="bg-red-100 text-red-700 p-4 mb-4 rounded">
+      {{ geoError }}
+    </div>
+  }
+
+  <h1 class="text-2xl font-bold mb-6">
+    {{ taskId ? 'Editar Muestra Botánica' : 'Nueva Muestra Botánica' }}
+  </h1>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+    <!-- Título -->
+    <div>
+      <label class="block mb-2 font-medium">Título:</label>
+      <input formControlName="title" type="text" class="w-full p-2 border rounded" />
+      @if (form.get('title')?.invalid && form.get('title')?.touched) {
+        <span class="text-red-500 text-sm">El título debe tener al menos 3 caracteres</span>
+      }
+    </div>
+
+    <!-- Fecha y Hora -->
+    <div>
+      <label class="block mb-2 font-medium">Fecha y Hora de Muestreo:</label>
+      <input formControlName="samplingDateTime" type="datetime-local" class="w-full p-2 border rounded" />
+    </div>
+
+    <!-- Ubicación -->
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block mb-2 font-medium">Latitud:</label>
+        <input type="number" [(ngModel)]="latitude" [ngModelOptions]="{standalone: true}" class="w-full p-2 border rounded" step="any" />
+      </div>
+      <div>
+        <label class="block mb-2 font-medium">Longitud:</label>
+        <input type="number" [(ngModel)]="longitude" [ngModelOptions]="{standalone: true}" class="w-full p-2 border rounded" step="any" />
+      </div>
+    </div>
+
+    <!-- Condiciones Climáticas -->
+    <div>
+      <label class="block mb-2 font-medium">Condiciones Climáticas:</label>
+      <input formControlName="weatherConditions" type="text" class="w-full p-2 border rounded" />
+      @if (form.get('weatherConditions')?.invalid && form.get('weatherConditions')?.touched) {
+        <span class="text-red-500 text-sm">Las condiciones climáticas son requeridas</span>
+      }
+    </div>
+
+    <!-- Descripción del Hábitat -->
+    <div>
+      <label class="block mb-2 font-medium">Descripción del Hábitat:</label>
+      <textarea formControlName="habitatDescription" class="w-full p-2 border rounded" rows="3"></textarea>
+      @if (form.get('habitatDescription')?.invalid && form.get('habitatDescription')?.touched) {
+        <span class="text-red-500 text-sm">La descripción debe tener al menos 10 caracteres</span>
+      }
+    </div>
+
+    <!-- Fotos del Muestreo -->
+    <div>
+      <label class="block mb-2 font-medium">Fotos del Muestreo:</label>
+      <div class="flex flex-wrap gap-2 mb-2">
+        @for (file of samplingFiles; track $index; let idx = $index) {
+          @if (isString(file)) {
+            <div class="relative">
+              <img [src]="file" alt="Muestreo" class="w-24 h-24 object-cover rounded" />
+              <button type="button" (click)="deleteSamplingPhoto(idx)"
+                class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">
+                ×
+              </button>
+            </div>
+          }
+        }
+      </div>
+      <input type="file" multiple (change)="onSamplingFileChange($event)" class="w-full p-2 border rounded" accept="image/*" />
+    </div>
+
+    <!-- Especies -->
+    <div>
+      <h3 class="text-xl font-semibold mb-4">Detalles de Especies</h3>
+      <div formArrayName="speciesDetails">
+        @for (species of speciesArray.controls; track $index; let i = $index) {
+          <div [formGroupName]="i" class="border p-4 mb-4 rounded">
+            <div class="flex justify-between items-center mb-2">
+              <span class="font-medium">Especie {{ i + 1 }}</span>
+              @if (speciesArray.length > 1) {
+                <button type="button" (click)="removeSpecies(i)" class="text-red-500 hover:text-red-700">🗑️ Eliminar</button>
+              }
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block mb-1">Nombre Científico:</label>
+                <input formControlName="scientificName" type="text" class="w-full p-2 border rounded" />
+              </div>
+              <div>
+                <label class="block mb-1">Nombre Común:</label>
+                <input formControlName="commonName" type="text" class="w-full p-2 border rounded" />
+              </div>
+            </div>
+            <div class="mt-3">
+              <label class="block mb-1">Familia:</label>
+              <input formControlName="family" type="text" class="w-full p-2 border rounded" />
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-3">
+              <div>
+                <label class="block mb-1">Cantidad de Muestra:</label>
+                <input formControlName="sampleQuantity" type="number" class="w-full p-2 border rounded" min="1" />
+              </div>
+              <div>
+                <label class="block mb-1">Estado de la Planta:</label>
+                <input formControlName="plantState" type="text" class="w-full p-2 border rounded" />
+              </div>
+            </div>
+
+            <!-- Fotos de la especie -->
+            <div class="mt-3">
+              <label class="block mb-1">Fotos de la Especie:</label>
+              <div class="flex flex-wrap gap-2 mb-2">
+                @if (speciesFiles[i]) {
+                  @for (file of speciesFiles[i]; track $index; let j = $index) {
+                    @if (isString(file)) {
+                      <div class="relative">
+                        <img [src]="file" alt="Especie" class="w-24 h-24 object-cover rounded" />
+                        <button type="button" (click)="deleteSpeciesPhoto(i, j)"
+                          class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">
+                          ×
+                        </button>
+                      </div>
+                    }
+                  }
+                }
+              </div>
+              <input type="file" multiple (change)="onSpeciesFileChange($event, i)" class="w-full p-2 border rounded" accept="image/*" />
+            </div>
+          </div>
+        }
+      </div>
+      <button type="button" (click)="addSpecies()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        Agregar Especie
+      </button>
+    </div>
+
+    <!-- Observaciones Adicionales -->
+    <div>
+      <label class="block mb-2 font-medium">Observaciones Adicionales:</label>
+      <textarea formControlName="additionalObservations" class="w-full p-2 border rounded" rows="3"></textarea>
+    </div>
+
+    <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600"
+      [disabled]="isSubmitting || form.invalid">
+      {{ isSubmitting ? 'Procesando...' : (taskId ? 'Guardar Cambios' : 'Guardar Muestra') }}
+    </button>
+  </form>
+</div>

@@ -1,0 +1,44 @@
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { AuthStore } from '../../store/auth.store';
+
+@Component({
+  selector: 'app-create-user-page',
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, RouterModule],
+  templateUrl: './create-user-page.html',
+  styleUrl: './create-user-page.css',
+})
+export class CreateUserPageComponent implements OnInit {
+  form: FormGroup;
+
+  constructor(
+    private fb: FormBuilder,
+    public authStore: AuthStore,
+    private router: Router
+  ) {
+    this.form = this.fb.group({
+      username: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      rol: ['', [Validators.required]],
+    });
+  }
+
+  ngOnInit(): void {
+    if (!this.authStore.isAuthenticated() || !this.authStore.isAdmin()) {
+      this.router.navigate(['/users']);
+    }
+  }
+
+  async onSubmit(): Promise<void> {
+    if (this.form.invalid) return;
+
+    const result = await this.authStore.signup(this.form.value);
+    if (result.success) {
+      setTimeout(() => this.router.navigate(['/users']), 1000);
+    }
+  }
+}

@@ -1,0 +1,24 @@
+<div class="profile-container">
+  @if (authStore.user()) {
+    <div class="profile-card">
+      <div class="profile-header">
+        <div class="avatar-container">
+          <img class="avatar" src="https://vectorified.com/images/avatar-icon-png-24.png" alt="Avatar" />
+        </div>
+        <h1 class="profile-name">{{ authStore.user()!.username }}</h1>
+      </div>
+      <div class="profile-details">
+        <div class="detail-item">
+          <span class="detail-label">📧 Correo:</span>
+          <span class="detail-value">{{ authStore.user()!.email }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">🏷️ Rol:</span>
+          <span class="detail-value capitalize">{{ authStore.user()!.rol }}</span>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="text-center py-8">Cargando...</div>
+  }
+</div>

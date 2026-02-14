@@ -1,0 +1,52 @@
+.collaborator-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 2rem;
+}
+
+.collaborator-header {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #1a472a;
+  margin-bottom: 2rem;
+}
+
+.collaborator-form {
+  width: 100%;
+  max-width: 450px;
+}
+
+.email-search {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.email-search:focus {
+  outline: none;
+  border-color: #166534;
+}
+
+.btn-verify {
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #166534, #15803d);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-verify:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(22, 101, 52, 0.3);
+}

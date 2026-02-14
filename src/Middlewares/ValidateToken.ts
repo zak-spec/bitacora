@@ -53,3 +53,27 @@ export const adminRequired = (req: Request, res: Response, next: NextFunction): 
     res.status(500).json({ message: "Error del servidor" });
   }
 };
+
+/**
+ * Middleware opcional: si hay token lo decodifica y asigna req.user,
+ * si no hay token simplemente continúa (req.user queda undefined).
+ * Útil para rutas como /register donde un admin puede crear usuarios.
+ */
+export const optionalAuth = (req: Request, _res: Response, next: NextFunction): void => {
+  try {
+    const { token } = req.cookies as { token?: string };
+    if (!token) {
+      next();
+      return;
+    }
+
+    jwt.verify(token, TOKEN_SECRET, (err, decoded) => {
+      if (!err && decoded) {
+        req.user = decoded as JwtPayload;
+      }
+      next();
+    });
+  } catch {
+    next();
+  }
+};

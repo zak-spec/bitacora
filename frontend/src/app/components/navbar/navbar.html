@@ -1,0 +1,77 @@
+@if (authStore.isAuthenticated()) {
+  <!-- Desktop sidebar -->
+  <nav class="sidebar" [class.collapsed]="!isOpen()">
+    <div class="sidebar-header">
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        {{ isOpen() ? '✕' : '☰' }}
+      </button>
+      @if (isOpen()) {
+        <span class="brand">🌿 Bitácora</span>
+      }
+    </div>
+
+    @if (isOpen()) {
+      <ul class="nav-links">
+        <li><a routerLink="/profile" routerLinkActive="active">👤 Perfil</a></li>
+
+        @if (authStore.isAdmin()) {
+          <li><a routerLink="/users" routerLinkActive="active">👥 Usuarios</a></li>
+          <li><a routerLink="/create-user" routerLinkActive="active">➕ Crear Usuario</a></li>
+          <li><a routerLink="/search-users" routerLinkActive="active">🔍 Buscar Usuarios</a></li>
+        }
+
+        @if (authStore.isInvestigador()) {
+          <li><a routerLink="/tasks" routerLinkActive="active">📋 Bitácoras</a></li>
+          <li><a routerLink="/add-task" routerLinkActive="active">➕ Crear</a></li>
+          <li><a routerLink="/search" routerLinkActive="active">🔍 Buscar</a></li>
+        }
+
+        @if (authStore.isColaborador()) {
+          <li><a routerLink="/collaborator" routerLinkActive="active">📋 Colaboración</a></li>
+          <li><a routerLink="/tasks" routerLinkActive="active">📄 Bitácoras</a></li>
+        }
+
+        <li><a routerLink="/About" routerLinkActive="active">ℹ️ Acerca de</a></li>
+        <li>
+          <button class="logout-btn" (click)="onLogout()" [disabled]="isLoggingOut()">
+            {{ isLoggingOut() ? '⏳ Cerrando...' : '🚪 Cerrar Sesión' }}
+          </button>
+        </li>
+      </ul>
+    }
+  </nav>
+
+  <!-- Mobile menu button -->
+  <button class="mobile-menu-btn" (click)="toggleMobileMenu()">☰</button>
+
+  @if (isMobileMenuOpen()) {
+    <div class="mobile-overlay" (click)="toggleMobileMenu()"></div>
+    <nav class="mobile-nav">
+      <ul class="nav-links">
+        <li><a routerLink="/profile" (click)="toggleMobileMenu()">👤 Perfil</a></li>
+
+        @if (authStore.isAdmin()) {
+          <li><a routerLink="/users" (click)="toggleMobileMenu()">👥 Usuarios</a></li>
+          <li><a routerLink="/create-user" (click)="toggleMobileMenu()">➕ Crear Usuario</a></li>
+          <li><a routerLink="/search-users" (click)="toggleMobileMenu()">🔍 Buscar Usuarios</a></li>
+        }
+
+        @if (authStore.isInvestigador()) {
+          <li><a routerLink="/tasks" (click)="toggleMobileMenu()">📋 Bitácoras</a></li>
+          <li><a routerLink="/add-task" (click)="toggleMobileMenu()">➕ Crear</a></li>
+          <li><a routerLink="/search" (click)="toggleMobileMenu()">🔍 Buscar</a></li>
+        }
+
+        @if (authStore.isColaborador()) {
+          <li><a routerLink="/collaborator" (click)="toggleMobileMenu()">📋 Colaboración</a></li>
+          <li><a routerLink="/tasks" (click)="toggleMobileMenu()">📄 Bitácoras</a></li>
+        }
+
+        <li><a routerLink="/About" (click)="toggleMobileMenu()">ℹ️ Acerca de</a></li>
+        <li>
+          <button class="logout-btn" (click)="onLogout()">🚪 Cerrar Sesión</button>
+        </li>
+      </ul>
+    </nav>
+  }
+}

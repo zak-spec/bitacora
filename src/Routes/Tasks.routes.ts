@@ -10,6 +10,6 @@ router.get("/tasks", authRequired, getTasks);
 router.get("/tasks/:id", authRequired, getTask);
 router.post("/tasks", authRequired, validateSchema(TaskSchema), createTask);
 router.delete("/tasks/:id", authRequired, deleteTask);
-router.put("/tasks/:id", authRequired, updateTask);
+router.put("/tasks/:id", authRequired, validateSchema(TaskSchema), updateTask);
 
 export default router;

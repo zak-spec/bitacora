@@ -1,0 +1,22 @@
+<div class="user-card">
+  <div class="user-info">
+    <div class="user-avatar">👤</div>
+    <div>
+      <h3>{{ user.username }}</h3>
+      <p class="user-email">📧 {{ user.email }}</p>
+      <span class="role-badge" [class]="getRoleBadgeClass()">{{ user.rol }}</span>
+    </div>
+  </div>
+  <div class="user-actions">
+    <button class="btn btn-edit" (click)="editUser()">✏️ Editar</button>
+    @if (!showDeleteConfirm()) {
+      <button class="btn btn-delete" (click)="confirmDelete()">🗑️ Eliminar</button>
+    } @else {
+      <div class="delete-confirm">
+        <span>¿Seguro?</span>
+        <button class="btn btn-delete" (click)="executeDelete()">Sí</button>
+        <button class="btn btn-cancel" (click)="cancelDelete()">No</button>
+      </div>
+    }
+  </div>
+</div>

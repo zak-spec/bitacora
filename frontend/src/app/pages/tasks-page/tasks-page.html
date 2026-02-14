@@ -1,0 +1,25 @@
+<div class="min-h-screen py-6 sm:py-12 bitacora-background">
+  <div class="mx-auto px-4 sm:px-6 max-w-6xl">
+    <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">
+      {{ authStore.isColaborador() ? 'Bitácoras de Colaboración' : 'Mis Bitácoras' }}
+    </h1>
+
+    @if (tasksStore.loading()) {
+      <div class="text-center py-8">Cargando...</div>
+    } @else {
+      @if (authStore.isColaborador()) {
+        @for (task of tasksStore.collaborationTasks(); track task._id; let i = $index) {
+          <app-card [task]="task" [index]="i" (onDelete)="onDeleteTask($event)" />
+        } @empty {
+          <p class="text-center text-gray-500 py-8">No hay bitácoras de colaboración disponibles.</p>
+        }
+      } @else {
+        @for (task of tasksStore.tasks(); track task._id; let i = $index) {
+          <app-card [task]="task" [index]="i" (onDelete)="onDeleteTask($event)" />
+        } @empty {
+          <p class="text-center text-gray-500 py-8">No hay bitácoras registradas.</p>
+        }
+      }
+    }
+  </div>
+</div>

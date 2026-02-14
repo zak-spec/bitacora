@@ -1,0 +1,49 @@
+<div class="card">
+  <div class="card-header">
+    <h3>{{ task.title }}</h3>
+    <span class="date">{{ task.samplingDateTime | date:'medium' }}</span>
+  </div>
+
+  <div class="card-map" [id]="mapId"></div>
+
+  @if (task.samplingPhotos && task.samplingPhotos.length > 0) {
+    <div class="card-photos">
+      @for (photo of task.samplingPhotos; track photo) {
+        <img [src]="photo" alt="Foto de muestreo" class="thumbnail" />
+      }
+    </div>
+  }
+
+  <div class="card-info">
+    <p><strong>🌡️ Clima:</strong> {{ task.weatherConditions }}</p>
+    <p><strong>📍 Ubicación:</strong> {{ task.location.latitude }}, {{ task.location.longitude }}</p>
+  </div>
+
+  @if (task.speciesDetails && task.speciesDetails.length > 0) {
+    <div class="species-grid">
+      @for (species of task.speciesDetails; track species.scientificName) {
+        <div class="species-item">
+          <span class="sci-name">{{ species.scientificName }}</span>
+          <span class="common-name">{{ species.commonName }}</span>
+          <span class="quantity">x{{ species.sampleQuantity }}</span>
+        </div>
+      }
+    </div>
+  }
+
+  <div class="card-actions">
+    <a [routerLink]="['/details', task._id]" class="btn btn-view">Ver Detalles</a>
+    @if (!authStore.isColaborador()) {
+      <a [routerLink]="['/tasks', task._id]" class="btn btn-edit">Editar</a>
+      @if (!showDeleteConfirm()) {
+        <button class="btn btn-delete" (click)="confirmDelete()">Eliminar</button>
+      } @else {
+        <div class="delete-confirm">
+          <span>¿Seguro?</span>
+          <button class="btn btn-delete" (click)="executeDelete()">Sí</button>
+          <button class="btn btn-cancel" (click)="cancelDelete()">No</button>
+        </div>
+      }
+    }
+  </div>
+</div>
