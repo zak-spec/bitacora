@@ -3,7 +3,6 @@ import { useTasks } from "../../Context/TasksContex";
 import { useAuth } from "../../Context/AuthContext";
 import Card from "../../Components/Card/Card";
 import "./TasksPage.css";
-import { Link } from "react-router-dom";
 
 function TasksPage() {
   const { tasks, collaborationTasks, getTasks, getCollaborationTasks } = useTasks();
@@ -35,10 +34,13 @@ function TasksPage() {
           {user.rol === 'colaborador' ? 'Bitácoras Colaborativas' : 'Registros de Muestreo Botánico'}
         </h1>
 
-        {tasksToDisplay.length > 0 &&
+        {tasksToDisplay.length > 0 ? (
           tasksToDisplay.map((task, index) => (
             <Card key={task._id} task={task} index={index} isCollaborator={user.rol === 'colaborador'} />
-          ))}
+          ))
+        ) : (
+          <p className="text-center text-gray-500 mt-8">No hay bitácoras registradas aún.</p>
+        )}
       </div>
     </div>
   );

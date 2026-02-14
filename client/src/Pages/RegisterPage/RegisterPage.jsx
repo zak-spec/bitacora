@@ -104,11 +104,11 @@ const RegisterPage = () => {
               <input
                 type="password"
                 {...register("password", { 
-                  required: "La contraseña es obligatoria"
-                  // minLength: {
-                  //   value: 6,
-                  //   message: "La contraseña debe tener al menos 6 caracteres"
-                  // }
+                  required: "La contraseña es obligatoria",
+                  minLength: {
+                    value: 6,
+                    message: "La contraseña debe tener al menos 6 caracteres"
+                  }
                 })}
                 className="w-full pl-10 pr-4 py-3 rounded-lg input-field"
                 placeholder="Tu contraseña"
@@ -135,7 +135,6 @@ const RegisterPage = () => {
                 className="w-full pl-10 pr-4 py-3 rounded-lg input-field"
               >
                 <option value="">Seleccionar rol</option>           
-                <option value="administrador">administrador</option>
                 <option value="investigador">Investigador</option>
                 <option value="colaborador">Colaborador</option>
               </select>

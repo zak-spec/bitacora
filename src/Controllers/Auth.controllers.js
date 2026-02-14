@@ -8,6 +8,13 @@ export const register = async (req, res) => {
   const { email, password, username, rol } = req.body;
 
   try {
+    // Solo un administrador autenticado puede crear otros administradores
+    if (rol === 'administrador') {
+      if (!req.user || req.user.rol !== 'administrador') {
+        return res.status(403).json(["Solo un administrador puede crear cuentas de administrador"]);
+      }
+    }
+
     const userFound = await User.findOne({ email });
     if (userFound) return res.status(400).json(["El email ya está registrado"]);
     
@@ -110,10 +117,9 @@ export const profile = async (req, res) => {
     username: userFound.username,
     email: userFound.email,
     rol: userFound.rol,
-    CreatedAt: userFound.createdAt,
-    UpdatedAt: userFound.updatedAt,
+    createdAt: userFound.createdAt,
+    updatedAt: userFound.updatedAt,
   });
-  res.send("Profile");
 };
 
 export const admin = async (req, res) => {

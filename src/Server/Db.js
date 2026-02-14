@@ -1,9 +1,12 @@
 import mongoose from "mongoose";
+import { MONGODB_URI } from "./Config.js";
 
 export const connectDB = async () => {
   try {
-    await mongoose.connect("mongodb+srv://zak:uXtjVjeSWTYGMNmh@cluster0.ru6wu.mongodb.net/");
+    await mongoose.connect(MONGODB_URI);
+    console.log("MongoDB conectado correctamente");
   } catch (error) {
-    console.error("Error: ", error);
+    console.error("Error al conectar MongoDB:", error);
+    process.exit(1);
   }
 };

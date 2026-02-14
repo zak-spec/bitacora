@@ -7,7 +7,7 @@ const Navbar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggedOut, setIsLoggedOut] = useState(false); // Nuevo estado
-  const { isAuthenticated, logout, user, setCreatingUser } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
   const navigate = useNavigate();
   const timerRef = useRef(null); // Referencia para el timer
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -28,17 +28,12 @@ const Navbar = () => {
       await logout();
       timerRef.current = setTimeout(() => {
         navigate('/', { replace: true });
-        window.location.reload();
       }, 1000);
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
       setIsLoading(false);
       setIsLoggedOut(false);
     }
-  };
-
-  const handleCreateUser = () => {
-    navigate('/register', { state: { isAdminCreating: true } });
   };
 
   const toggleMobileMenu = () => {
@@ -129,14 +124,12 @@ const Navbar = () => {
               {isCollapsed ? '↪️' : 'Cerrar Sesión'}
             </button>
           </div>
-        ):!isAuthenticated && (
+        ) : (
           <div className="auth-buttons">
             <Link to="/login" className="btn btn-login">Iniciar Sesión</Link>
             <Link to="/register" className="btn btn-register">Registrarse</Link>
           </div>
         )}
-        
-        {}
       </div>
     </nav>
   );

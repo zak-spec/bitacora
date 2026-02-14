@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTasks } from "../../Context/TasksContex";
-import { useAuth } from "../../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "./Collaborator.css";
 
@@ -8,12 +7,14 @@ function Collaborator() {
   const { getCollaborationTasks } = useTasks();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage('');
 
     if (!email.trim()) {
-      console.log("El correo es requerido");
+      setMessage("El correo es requerido");
       return;
     }
 
@@ -22,10 +23,10 @@ function Collaborator() {
       if (tasksData && tasksData.length > 0) {
         navigate("/tasks");
       } else {
-        console.log('No se encontraron tareas asociadas a este correo');
+        setMessage('No se encontraron tareas asociadas a este correo');
       }
     } catch (error) {
-      console.error("Error:", error);
+      setMessage("Error al buscar tareas. Intente de nuevo.");
     }
   };
 
@@ -33,6 +34,11 @@ function Collaborator() {
     <div className="collaborator-container">
       <h2 className="collaborator-header">Verificación de Colaborador</h2>
       <form onSubmit={handleSubmit} className="collaborator-form">
+        {message && (
+          <div className="bg-yellow-100 text-yellow-800 p-3 mb-4 rounded text-sm">
+            {message}
+          </div>
+        )}
         <input
           type="email"
           value={email}

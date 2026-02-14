@@ -57,6 +57,10 @@ const tasksSchema = new mongoose.Schema({
         }
     }],
     additionalObservations: String,
+    collaborators: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }],
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",

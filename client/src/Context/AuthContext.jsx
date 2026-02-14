@@ -1,6 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { loginRequest, registerRequest, verifyTokenRequest, logoutRequest, updateUserRequired, deleteUserRequired, getAllUsersRequired } from "../Api/Auth";
-import Cookies from "js-cookie";
 
 const AuthContext = createContext();
 
@@ -104,9 +103,10 @@ export const AuthProvider = ({ children }) => {
       if (res.status === 200) {
         setUser(null);
         setIsAuthenticated(false);
+        setUsers(null);
       }
     } catch (error) {
-      console.log(error.response?.data);
+      console.error('Error al cerrar sesión:', error);
     }
   };
 
@@ -127,8 +127,8 @@ export const AuthProvider = ({ children }) => {
 
   const deleteUser = async (userId) => {
     try {
-      const res = await deleteUserRequired(userId);
-    setUsers(users.filter(userItem => userItem._id !== userId));
+      await deleteUserRequired(userId);
+      setUsers(prevUsers => prevUsers ? prevUsers.filter(userItem => userItem._id !== userId) : null);
     } catch (error) {
       setErrors(error.response?.data || ["Error al eliminar usuario"]);
       throw error;
@@ -136,19 +136,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const getAllUsers = async () => {
-    console.log('Intentando obtener todos los usuarios');
-    // Solo intentar obtener usuarios si el usuario actual es administrador
     if (!user || user.rol !== 'administrador') {
-      console.log('Usuario no autorizado para obtener lista de usuarios');
       setUsers(null);
       return;
     }
     
     try {
-      console.log('Solicitando lista de usuarios...');
       const res = await getAllUsersRequired();
       if (res.data) {
-        console.log('Usuarios obtenidos:', res.data);
         setUsers(res.data.filter(userItem => 
           userItem._id !== user._id && userItem.rol !== 'administrador'
         ));
@@ -156,24 +151,19 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Error al obtener usuarios:", error);
       setUsers(null);
-      // No lanzar el error, solo registrarlo
     }
   };
 
   useEffect(() => {
     async function checkLogin() {
-      console.log('Verificando token de autenticación...');
       try {
         const res = await verifyTokenRequest();
-        console.log('Respuesta de verificación:', res);
         
         if (res && res.data) {
-          console.log('Usuario autenticado:', res.data);
           setUser(res.data);
           setIsAuthenticated(true);
         }
       } catch (error) {
-        console.error('Error en verificación de token:', error);
         setUser(null);
         setIsAuthenticated(false);
       } finally {
@@ -189,7 +179,6 @@ export const AuthProvider = ({ children }) => {
         try {
           const res = await getAllUsersRequired();
           if (res.data) {
-            console.log('Actualizando lista de usuarios');
             setUsers(res.data.filter(userItem => 
               userItem._id !== user._id && userItem.rol !== 'administrador'
             ));

@@ -8,16 +8,35 @@ import { useAuth } from '../../Context/AuthContext';
 
 
 const TasksFormPage = () => {
-  const navigate = useNavigate(); // Mover useNavigate aquí arriba
+  const navigate = useNavigate();
   const {loading} = useAuth();
-  const {createTasks,getTask,updateTask } = useTasks()
-  // const [File, setFile] = useState([])
+  const {createTasks, getTask, updateTask} = useTasks();
   const [samplingFiles, setSamplingFiles] = useState([]);
-  const [speciesFiles, setSpeciesFiles] = useState([]); // Añadir este estado
+  const [speciesFiles, setSpeciesFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [geoError, setGeoError] = useState(null);
   const params = useParams();
-  const { register, handleSubmit: handleReactHookFormSubmit, formState: { errors },setValue } = useForm({
+  const [formData, setFormData] = useState({
+    title: '',
+    samplingDateTime: new Date().toISOString().slice(0, 16),
+    location: {
+      latitude: '',
+      longitude: ''
+    },
+    weatherConditions: '',
+    habitatDescription: '',
+    samplingPhotos: [],
+    speciesDetails: [{
+      scientificName: '',
+      commonName: '',
+      family: '',
+      sampleQuantity: 0,
+      plantState: '',
+      speciesPhotos: []
+    }],
+    additionalObservations: ''
+  });
+  const { register, handleSubmit: handleReactHookFormSubmit, formState: { errors }, setValue } = useForm({
     defaultValues: {
       title: '',
       samplingDateTime: new Date().toISOString().slice(0, 16),
@@ -39,6 +58,7 @@ const TasksFormPage = () => {
     async function loadTask() {
       if (params.id) {
         const task = await getTask(params.id);
+        if (!task) return;
         setValue('title', task.title);
         setValue('samplingDateTime', new Date(task.samplingDateTime).toISOString().slice(0, 16));
         setValue('weatherConditions', task.weatherConditions);
@@ -46,7 +66,6 @@ const TasksFormPage = () => {
         setValue('additionalObservations', task.additionalObservations);
         setValue('speciesDetails', task.speciesDetails);
         
-        // Guardar las URLs de las fotos existentes
         setSamplingFiles(task.samplingPhotos || []);
         if (task.speciesDetails) {
           setSpeciesFiles(task.speciesDetails.map(species => species.speciesPhotos || []));
@@ -58,7 +77,6 @@ const TasksFormPage = () => {
           samplingDateTime: new Date(task.samplingDateTime).toISOString().slice(0, 16)
         }));
       } else {
-        // Limpiar el formulario cuando no hay ID
         setValue('title', '');
         setValue('samplingDateTime', new Date().toISOString().slice(0, 16));
         setValue('weatherConditions', '');
@@ -99,33 +117,9 @@ const TasksFormPage = () => {
       }
     }
     loadTask();
-  }, [params.id, setValue, getTask]);
+  }, [params.id]);
 
-
-  if(loading) return <h1>Cargando...</h1>;
-
-
-
-  const [formData, setFormData] = useState({
-    title: '',
-    samplingDateTime: new Date().toISOString().slice(0, 16),
-    location: {
-      latitude: '',
-      longitude: ''
-    },
-    weatherConditions: '',
-    habitatDescription: '',
-    samplingPhotos: [],
-    speciesDetails: [{
-      scientificName: '',
-      commonName: '',
-      family: '',
-      sampleQuantity: 0,
-      plantState: '',
-      speciesPhotos: []
-    }],
-    additionalObservations: ''
-  });
+  if (loading) return <h1>Cargando...</h1>;
 
   useEffect(() => {
     // Obtener ubicación actual
@@ -179,7 +173,6 @@ const TasksFormPage = () => {
   const onSubmit = handleReactHookFormSubmit(async (formValues) => {
     try {
       setIsSubmitting(true);
-      console.log('Iniciando envío del formulario');
 
       const processedFormValues = {
         ...formValues,
@@ -193,8 +186,6 @@ const TasksFormPage = () => {
       // Procesar fotos de muestreo
       let samplingPhotos = [];
       if (samplingFiles.length > 0) {
-        console.log('Procesando fotos de muestreo');
-        // Separar URLs existentes de nuevos archivos
         const existingUrls = samplingFiles.filter(file => typeof file === 'string');
         const newFiles = samplingFiles.filter(file => typeof file !== 'string');
         
@@ -206,10 +197,8 @@ const TasksFormPage = () => {
       // Procesar detalles de especies
       processedFormValues.speciesDetails = await Promise.all(
         formValues.speciesDetails.map(async (species, index) => {
-          console.log(`Procesando especie ${index + 1}`);
           let speciesPhotos = [];
           if (speciesFiles[index]?.length > 0) {
-            // Separar URLs existentes de nuevos archivos
             const existingUrls = speciesFiles[index].filter(file => typeof file === 'string');
             const newFiles = speciesFiles[index].filter(file => typeof file !== 'string');
             
@@ -224,15 +213,12 @@ const TasksFormPage = () => {
         })
       );
 
-      console.log('Datos procesados:', processedFormValues);
-
       if (params.id) {
         await updateTask(params.id, processedFormValues);
       } else {
         await createTasks(processedFormValues);
       }
 
-      console.log('Operación completada con éxito');
       navigate('/tasks');
     } catch (error) {
       console.error('Error en el envío del formulario:', error);

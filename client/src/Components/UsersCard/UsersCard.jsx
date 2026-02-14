@@ -10,10 +10,13 @@ function UsersCard({ user, index }) {
   const handleDelete = async (e) => {
     e.stopPropagation();
     e.preventDefault();
+    if (!window.confirm(`¿Estás seguro de que deseas eliminar al usuario "${user.username}"? Esta acción no se puede deshacer.`)) {
+      return;
+    }
     try {
       await deleteUser(user._id);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

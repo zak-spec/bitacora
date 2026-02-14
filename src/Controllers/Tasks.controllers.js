@@ -77,8 +77,15 @@ export const getTask = async (req, res) => {
 
 export const deleteTask = async (req, res) => {
   try {
-    const task = await Task.findByIdAndDelete(req.params.id);
+    const task = await Task.findById(req.params.id);
     if (!task) return res.status(404).json({ message: "Task no encontrado" });
+
+    // Verificar que el usuario sea el dueño de la tarea
+    if (task.user.toString() !== req.user.id) {
+      return res.status(403).json({ message: "No tienes permisos para eliminar esta tarea" });
+    }
+
+    await Task.findByIdAndDelete(req.params.id);
     return res.json({ message: "Task eliminado" });
   } catch (error) {
     console.error(error);
@@ -90,10 +97,17 @@ export const deleteTask = async (req, res) => {
 
 export const updateTask = async (req, res) => {
   try {
+    const taskExists = await Task.findById(req.params.id);
+    if (!taskExists) return res.status(404).json({ message: "Task no encontrado" });
+
+    // Verificar que el usuario sea el dueño de la tarea
+    if (taskExists.user.toString() !== req.user.id) {
+      return res.status(403).json({ message: "No tienes permisos para actualizar esta tarea" });
+    }
+
     const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
-    if (!task) return res.status(404).json({ message: "Task no encontrado" });
     res.json(task);
   } catch (error) {
     console.error(error);
