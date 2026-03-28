@@ -1,0 +1,151 @@
+.register-container {
+  animation: gradientBG 15s ease infinite;
+  background-size: 400% 400%;
+}
+
+.register-form {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.input-group {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.form-input {
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.form-input:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
+  border-color: #3b82f6;
+}
+
+.submit-button {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  background-size: 200% auto;
+}
+
+.submit-button:hover {
+  background-position: right center;
+  transform: translateY(-2px);
+}
+
+.submit-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.submit-button:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-message {
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+
+/* Efecto hover para inputs */
+.input-group:hover .form-input {
+  background-color: rgba(82, 82, 91, 0.6);
+}
+
+/* Efecto focus dentro del grupo */
+.input-group:focus-within {
+  transform: translateY(-1px);
+}
+
+/* Animación para mensajes de error */
+.error-message {
+  opacity: 0;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Heredar los estilos principales del LoginPage */
+.login-background {
+  background: linear-gradient(135deg, #1a365d 0%, #1a202c 50%, #44337a 100%);
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: transform 0.5s ease;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Estilos específicos para el select del rol */
+select.input-field {
+  appearance: none;
+  background-image: url("data:image/svg+xml,...");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 0.75rem;
+}
+
+select.input-field:focus {
+  background-image: url("data:image/svg+xml,...");
+}
+
+.input-field {
+  padding-left: 2.5rem !important; /* Asegura espacio suficiente para el icono */
+  background: rgba(31, 41, 55, 0.5);
+  color: rgb(0, 0, 0);
+  transition: all 0.3s ease;
+}
+
+.input-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  color: #9ca3af;
+  pointer-events: none;
+  /* margin-left: 100px; */
+}
